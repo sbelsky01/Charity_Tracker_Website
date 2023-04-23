@@ -1,7 +1,7 @@
 import { createContext } from "react";
 
 export const CharitiesContext = createContext({
-  myCharities: [],
+  charities: [],
   income: [],
   maaser: 0,
 });

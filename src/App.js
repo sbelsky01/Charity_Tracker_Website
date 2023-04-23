@@ -10,7 +10,7 @@ import Maaser from "./components/Maaser/maaser";
 
 function App() {
   const [charitiesState, charitiesDispatch] = useReducer(charitiesReducer, {
-    myCharities: [],
+    charities: [],
     income: [],
     maaser: 0,
   });

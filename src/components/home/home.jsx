@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Typography } from "@mui/material";
+import { CharitiesContext } from "../../state/charities/charities-context";
+import { DonationActions } from "../../state/charities/charities-reducer";
 
 export default function Home() {
   const [keywordInput, setKeywordInput] = useState("");
   const [results, setResults] = useState([]);
-  const [donationAmt, setDonationAmt] = useState(null);
+  const [donationAmt, setDonationAmt] = useState("");
+
+  const { charitiesState, charitiesDispatch } = useContext(CharitiesContext);
 
   function handleInputChange(event) {
     setKeywordInput(event.target.value);
@@ -18,7 +22,20 @@ export default function Home() {
     setDonationAmt(event.target.value);
   }
 
-  function handleDonateSubmit(ein) {}
+  function handleDonateSubmit(charity) {
+    if (!charitiesState.charities.find((x) => x.ein === charity.ein)) {
+      charitiesDispatch({
+        type: DonationActions.NEW_CHARITY,
+        charity: charity,
+      });
+    }
+
+    charitiesDispatch({
+      type: DonationActions.DONATE,
+      charity: charity,
+      amount: donationAmt,
+    });
+  }
 
   function searchCharities() {
     fetch(
@@ -55,6 +72,13 @@ export default function Home() {
             minWidth: "300px",
           }}
         >
+          <input
+            type="text"
+            value={donationAmt}
+            onChange={handleDonationAmtChange}
+            placeholder="enter donation amount"
+          />
+          <hr />
           {results.map((charity) => (
             <div className="profile" key={charity.ein}>
               <div style={{ display: "flex" }}>
@@ -69,7 +93,9 @@ export default function Home() {
                   Learn More about {charity.name}
                 </a>
               </p>
-              <button>Donate</button>
+              <button onClick={() => handleDonateSubmit(charity)}>
+                Donate
+              </button>
               <hr />
             </div>
           ))}
