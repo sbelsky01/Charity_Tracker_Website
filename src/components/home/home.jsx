@@ -1,12 +1,22 @@
 import React, { useState, useContext } from "react";
-import { Typography } from "@mui/material";
+import {
+  Typography,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+} from "@mui/material";
 import { CharitiesContext } from "../../state/charities/charities-context";
 import { DonationActions } from "../../state/charities/charities-reducer";
+import { causes } from "./causes";
+
+const numResultsChoices = [10, 20, 30, 40, 50];
 
 export default function Home() {
   const [keywordInput, setKeywordInput] = useState("");
   const [results, setResults] = useState([]);
   const [donationAmt, setDonationAmt] = useState("");
+  const [numSearchResults, setNumSearchResults] = useState(10);
 
   const { charitiesState, charitiesDispatch } = useContext(CharitiesContext);
 
@@ -15,7 +25,7 @@ export default function Home() {
   }
 
   function handleInputSubmit() {
-    searchCharities();
+    searchByKeyword();
   }
 
   function handleDonationAmtChange(event) {
@@ -37,15 +47,24 @@ export default function Home() {
     });
   }
 
-  function searchCharities() {
+  function searchByKeyword() {
     fetch(
-      `https://partners.every.org/v0.2/search/${keywordInput}?apiKey=pk_live_7ff644bd22f350332599315a92d916e7`
+      `https://partners.every.org/v0.2/search/${keywordInput}
+      ?apiKey=pk_live_7ff644bd22f350332599315a92d916e7&take=${numSearchResults}`
     )
       .then((response) => response.json())
       .then((data) => {
-        console.log("results:");
-        console.log(keywordInput);
-        console.log(data.nonprofits);
+        setResults(data.nonprofits);
+      });
+  }
+
+  function searchByCause(selectedCause) {
+    fetch(
+      `https://partners.every.org/v0.2/browse/${selectedCause}
+      ?apiKey=pk_live_7ff644bd22f350332599315a92d916e7&take=${numSearchResults}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
         setResults(data.nonprofits);
       });
   }
@@ -63,6 +82,40 @@ export default function Home() {
             onChange={handleInputChange}
           />
           <button onClick={handleInputSubmit}>Search</button>
+          <br />
+          <FormControl variant="standard" sx={{ minWidth: "150px" }}>
+            <InputLabel id="cause-select-label">Select Cause</InputLabel>
+            <Select labelId="cause-select-label" defaultValue="">
+              {causes.map((cause) => (
+                <MenuItem
+                  key={cause.value}
+                  value={cause.value}
+                  onClick={() => searchByCause(cause.value)}
+                >
+                  {cause.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <br />
+
+          <FormControl variant="standard" sx={{ minWidth: "150px" }}>
+            <InputLabel id="num-results-select-label">
+              Number of results
+            </InputLabel>
+            <Select labelId="num-results-select-label" defaultValue={10}>
+              {numResultsChoices.map((number) => (
+                <MenuItem
+                  key={number}
+                  value={number}
+                  onClick={() => setNumSearchResults(number)}
+                >
+                  {number}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </div>
         <div
           className="results"
