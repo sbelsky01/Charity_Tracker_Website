@@ -1,0 +1,18 @@
+.charity-search {
+  margin-top: 30px;
+}
+
+.search-bar {
+  width: 20vw;
+  padding: 20px;
+}
+
+.search-bar * {
+  margin-bottom: 20px;
+}
+
+.results {
+  width: 80vw;
+  height: 80vh;
+  overflow: auto;
+}

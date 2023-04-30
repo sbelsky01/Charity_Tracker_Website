@@ -1,36 +1,76 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
+import "./home.css";
 import {
   Typography,
   Select,
   MenuItem,
   InputLabel,
   FormControl,
+  TextField,
+  List,
+  ListItem,
+  ListItemAvatar,
+  Avatar,
+  ListItemText,
+  Link,
+  Button,
+  Box,
+  IconButton,
 } from "@mui/material";
 import { CharitiesContext } from "../../state/charities/charities-context";
 import { DonationActions } from "../../state/charities/charities-reducer";
 import { causes } from "./causes";
+import DefaultIcon from "../../images/default-charity-logo-transparent-edges.png";
+import VolunteerActivismIcon from "@mui/icons-material/VolunteerActivism";
 
 const numResultsChoices = [10, 20, 30, 40, 50];
+export const searchTypes = {
+  KEYWORD: "KEYWORD",
+  CAUSE: "CAUSE",
+};
 
 export default function Home() {
   const [keywordInput, setKeywordInput] = useState("");
+  const [causeInput, setCauseInput] = useState("");
   const [results, setResults] = useState([]);
   const [donationAmt, setDonationAmt] = useState("");
   const [numSearchResults, setNumSearchResults] = useState(10);
+  const [searchType, setSearchType] = useState("");
 
   const { charitiesState, charitiesDispatch } = useContext(CharitiesContext);
 
-  function handleInputChange(event) {
+  function handleKeywordInputChange(event) {
     setKeywordInput(event.target.value);
   }
 
-  function handleInputSubmit() {
+  function handleKeywordInputSubmit() {
+    setSearchType(searchTypes.KEYWORD);
     searchByKeyword();
+  }
+
+  function handleCauseSelected(cause) {
+    console.log(cause);
+    setSearchType(searchTypes.CAUSE);
+    setCauseInput(cause);
+    searchByCause(cause);
   }
 
   function handleDonationAmtChange(event) {
     setDonationAmt(event.target.value);
   }
+
+  useEffect(() => {
+    switch (searchType) {
+      case searchTypes.KEYWORD: {
+        searchByKeyword(keywordInput);
+        break;
+      }
+      case searchTypes.CAUSE: {
+        searchByCause(causeInput);
+        break;
+      }
+    }
+  }, [numSearchResults]);
 
   function handleDonateSubmit(charity) {
     if (!charitiesState.charities.find((x) => x.ein === charity.ein)) {
@@ -48,6 +88,7 @@ export default function Home() {
   }
 
   function searchByKeyword() {
+    // console.log(numSearchResults);
     fetch(
       `https://partners.every.org/v0.2/search/${keywordInput}
       ?apiKey=pk_live_7ff644bd22f350332599315a92d916e7&take=${numSearchResults}`
@@ -59,6 +100,7 @@ export default function Home() {
   }
 
   function searchByCause(selectedCause) {
+    console.log(selectedCause);
     fetch(
       `https://partners.every.org/v0.2/browse/${selectedCause}
       ?apiKey=pk_live_7ff644bd22f350332599315a92d916e7&take=${numSearchResults}`
@@ -66,23 +108,33 @@ export default function Home() {
       .then((response) => response.json())
       .then((data) => {
         setResults(data.nonprofits);
+        console.log(`https://partners.every.org/v0.2/browse/${selectedCause}
+      ?apiKey=pk_live_7ff644bd22f350332599315a92d916e7&take=${numSearchResults}`);
       });
+  }
+
+  function checkForKeywordEnter(event) {
+    if (event.keyCode == 13) {
+      event.target.blur();
+      handleKeywordInputSubmit();
+    }
   }
 
   return (
     <div className="App">
-      <Typography variant="h1">Welcome</Typography>
+      {/* <Typography variant="h1">Welcome</Typography> */}
       <div className="charity-search" style={{ display: "flex" }}>
-        <div className="search-bar">
-          <h3 htmlFor="keyword-search-box">Search By keyword</h3>
-          <input
-            type="text"
-            id="keyword-search-box"
+        <div
+          className="search-bar"
+          style={{ display: "flex", flexDirection: "column" }}
+        >
+          <TextField
+            variant="standard"
+            label="Search by Keyword"
             value={keywordInput}
-            onChange={handleInputChange}
+            onChange={handleKeywordInputChange}
+            onKeyDown={checkForKeywordEnter}
           />
-          <button onClick={handleInputSubmit}>Search</button>
-          <br />
           <FormControl variant="standard" sx={{ minWidth: "150px" }}>
             <InputLabel id="cause-select-label">Select Cause</InputLabel>
             <Select labelId="cause-select-label" defaultValue="">
@@ -90,16 +142,13 @@ export default function Home() {
                 <MenuItem
                   key={cause.value}
                   value={cause.value}
-                  onClick={() => searchByCause(cause.value)}
+                  onClick={() => handleCauseSelected(cause.value)}
                 >
                   {cause.name}
                 </MenuItem>
               ))}
             </Select>
           </FormControl>
-
-          <br />
-
           <FormControl variant="standard" sx={{ minWidth: "150px" }}>
             <InputLabel id="num-results-select-label">
               Number of results
@@ -120,38 +169,76 @@ export default function Home() {
         <div
           className="results"
           style={{
-            border: "thin black solid",
+            borderLeft: "thin black solid",
             minHeight: "300px",
             minWidth: "300px",
           }}
         >
-          <input
+          {/* <input
             type="text"
             value={donationAmt}
             onChange={handleDonationAmtChange}
             placeholder="enter donation amount"
-          />
-          <hr />
-          {results.map((charity) => (
-            <div className="profile" key={charity.ein}>
-              <div style={{ display: "flex" }}>
-                <img src={charity.logoUrl} />
-                <h3>{charity.name}</h3>
-              </div>
-              <div>
-                <p>{charity.description}...</p>
-              </div>
-              <p>
-                <a href={charity.profileUrl} target="_blank">
-                  Learn More about {charity.name}
-                </a>
-              </p>
-              <button onClick={() => handleDonateSubmit(charity)}>
-                Donate
-              </button>
-              <hr />
-            </div>
-          ))}
+          /> */}
+          {/* <hr /> */}
+          <List>
+            {results.map((charity) => (
+              <ListItem
+                className="profile"
+                key={charity.ein}
+                alignItems="flex-start"
+                divider
+                secondaryAction={
+                  <IconButton edge="end">
+                    <VolunteerActivismIcon
+                      onClick={() => handleDonateSubmit(charity)}
+                    />
+                  </IconButton>
+                }
+              >
+                <ListItemAvatar>
+                  <Avatar
+                    alt={charity.name + "logo"}
+                    src={charity.logoUrl || DefaultIcon}
+                  />
+                </ListItemAvatar>
+                <Box sx={{ width: "100%" }}>
+                  <ListItemText
+                    primary={charity.name}
+                    secondary={
+                      charity.description ? charity.description + "..." : ""
+                    }
+                  />
+                  {/* <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "end",
+                    }}
+                  > */}
+                  <Link
+                    href={charity.profileUrl}
+                    variant="body2"
+                    target="_blank"
+                    color="#36723a"
+                  >
+                    Learn More about {charity.name}
+                  </Link>
+                  {/* <VolunteerActivismIcon
+                      onClick={() => handleDonateSubmit(charity)}
+                    />
+                    <Button
+                      variant="contained"
+                      onClick={() => handleDonateSubmit(charity)}
+                      // sx={{ float: "right" }}
+                    >
+                      Donate
+                    </Button> */}
+                  {/* </div> */}
+                </Box>
+              </ListItem>
+            ))}
+          </List>
         </div>
       </div>
     </div>

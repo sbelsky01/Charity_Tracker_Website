@@ -34,7 +34,15 @@ export function Header() {
   };
 
   return (
-    <AppBar position="relative" sx={{ backgroundColor: "#1c2229" }}>
+    <AppBar
+      position="relative"
+      sx={{
+        position: "fixed",
+        color: "white",
+        zIndex: "99",
+        backgroundColor: "#36723a",
+      }}
+    >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <FitbitIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
