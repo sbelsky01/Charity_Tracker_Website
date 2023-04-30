@@ -1,16 +1,17 @@
 {
   "files": {
-    "main.css": "/Charity_Tracker_Website/static/css/main.073c9b0a.css",
-    "main.js": "/Charity_Tracker_Website/static/js/main.e3d6c5a5.js",
+    "main.css": "/Charity_Tracker_Website/static/css/main.4c39596f.css",
+    "main.js": "/Charity_Tracker_Website/static/js/main.330c157a.js",
     "static/js/787.7118effd.chunk.js": "/Charity_Tracker_Website/static/js/787.7118effd.chunk.js",
-    "static/media/logo.svg": "/Charity_Tracker_Website/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
+    "static/media/default-charity-logo-transparent-edges.png": "/Charity_Tracker_Website/static/media/default-charity-logo-transparent-edges.4c2ab76408263ce28f5e.png",
+    "static/media/charity-and-donation-icons-vector-merged-layers-gradient.jpg": "/Charity_Tracker_Website/static/media/charity-and-donation-icons-vector-merged-layers-gradient.105e49c75ded416544ba.jpg",
     "index.html": "/Charity_Tracker_Website/index.html",
-    "main.073c9b0a.css.map": "/Charity_Tracker_Website/static/css/main.073c9b0a.css.map",
-    "main.e3d6c5a5.js.map": "/Charity_Tracker_Website/static/js/main.e3d6c5a5.js.map",
+    "main.4c39596f.css.map": "/Charity_Tracker_Website/static/css/main.4c39596f.css.map",
+    "main.330c157a.js.map": "/Charity_Tracker_Website/static/js/main.330c157a.js.map",
     "787.7118effd.chunk.js.map": "/Charity_Tracker_Website/static/js/787.7118effd.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.073c9b0a.css",
-    "static/js/main.e3d6c5a5.js"
+    "static/css/main.4c39596f.css",
+    "static/js/main.330c157a.js"
   ]
 }
