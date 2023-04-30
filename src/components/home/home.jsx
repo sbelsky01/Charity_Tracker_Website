@@ -16,12 +16,20 @@ import {
   Button,
   Box,
   IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  InputAdornment,
 } from "@mui/material";
 import { CharitiesContext } from "../../state/charities/charities-context";
 import { DonationActions } from "../../state/charities/charities-reducer";
 import { causes } from "./causes";
 import DefaultIcon from "../../images/default-charity-logo-transparent-edges.png";
 import VolunteerActivismIcon from "@mui/icons-material/VolunteerActivism";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import { AccountCircle } from "@mui/icons-material";
 
 const numResultsChoices = [10, 20, 30, 40, 50];
 export const searchTypes = {
@@ -36,6 +44,8 @@ export default function Home() {
   const [donationAmt, setDonationAmt] = useState("");
   const [numSearchResults, setNumSearchResults] = useState(10);
   const [searchType, setSearchType] = useState("");
+  const [selectedCharity, setSelectedCharity] = useState({ name: "Every.org" });
+  const [open, setOpen] = useState(false);
 
   const { charitiesState, charitiesDispatch } = useContext(CharitiesContext);
 
@@ -55,8 +65,24 @@ export default function Home() {
     searchByCause(cause);
   }
 
+  function handleClickOpen(charity) {
+    setSelectedCharity(charity);
+    setOpen(true);
+  }
+
+  function handleClose(donate) {
+    if (donate) {
+      processDonation();
+    }
+    setOpen(false);
+    setDonationAmt("");
+  }
+
   function handleDonationAmtChange(event) {
-    setDonationAmt(event.target.value);
+    const amount = event.target.value;
+    if (amount === "" || /^\d+(\.\d{0,2})?$/.test(amount)) {
+      setDonationAmt(amount);
+    }
   }
 
   useEffect(() => {
@@ -72,23 +98,22 @@ export default function Home() {
     }
   }, [numSearchResults]);
 
-  function handleDonateSubmit(charity) {
-    if (!charitiesState.charities.find((x) => x.ein === charity.ein)) {
+  function processDonation() {
+    if (!charitiesState.charities.find((x) => x.ein === selectedCharity.ein)) {
       charitiesDispatch({
         type: DonationActions.NEW_CHARITY,
-        charity: charity,
+        charity: selectedCharity,
       });
     }
 
     charitiesDispatch({
       type: DonationActions.DONATE,
-      charity: charity,
+      charity: selectedCharity,
       amount: donationAmt,
     });
   }
 
   function searchByKeyword() {
-    // console.log(numSearchResults);
     fetch(
       `https://partners.every.org/v0.2/search/${keywordInput}
       ?apiKey=pk_live_7ff644bd22f350332599315a92d916e7&take=${numSearchResults}`
@@ -122,7 +147,6 @@ export default function Home() {
 
   return (
     <div className="App">
-      {/* <Typography variant="h1">Welcome</Typography> */}
       <div className="charity-search" style={{ display: "flex" }}>
         <div
           className="search-bar"
@@ -174,13 +198,28 @@ export default function Home() {
             minWidth: "300px",
           }}
         >
-          {/* <input
-            type="text"
-            value={donationAmt}
-            onChange={handleDonationAmtChange}
-            placeholder="enter donation amount"
-          /> */}
-          {/* <hr /> */}
+          <Dialog open={open} onClose={() => handleClose(false)}>
+            <DialogTitle>Donate to {selectedCharity.name}</DialogTitle>
+            <DialogContent>
+              <DialogContentText>Enter amount:</DialogContentText>
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <AttachMoneyIcon />
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  fullWidth
+                  variant="standard"
+                  placeholder="xxx.xx"
+                  value={donationAmt}
+                  onChange={handleDonationAmtChange}
+                />
+              </Box>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => handleClose(true)}>Donate</Button>
+              <Button onClick={() => handleClose(false)}>Cancel</Button>
+            </DialogActions>
+          </Dialog>
           <List>
             {results.map((charity) => (
               <ListItem
@@ -189,10 +228,11 @@ export default function Home() {
                 alignItems="flex-start"
                 divider
                 secondaryAction={
-                  <IconButton edge="end">
-                    <VolunteerActivismIcon
-                      onClick={() => handleDonateSubmit(charity)}
-                    />
+                  <IconButton
+                    edge="end"
+                    onClick={() => handleClickOpen(charity)}
+                  >
+                    <VolunteerActivismIcon />
                   </IconButton>
                 }
               >
