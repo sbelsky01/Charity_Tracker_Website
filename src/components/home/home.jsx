@@ -21,7 +21,6 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
-  InputAdornment,
 } from "@mui/material";
 import { CharitiesContext } from "../../state/charities/charities-context";
 import { DonationActions } from "../../state/charities/charities-reducer";
@@ -29,7 +28,6 @@ import { causes } from "./causes";
 import DefaultIcon from "../../images/default-charity-logo-transparent-edges.png";
 import VolunteerActivismIcon from "@mui/icons-material/VolunteerActivism";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import { AccountCircle } from "@mui/icons-material";
 
 const numResultsChoices = [10, 20, 30, 40, 50];
 export const searchTypes = {
@@ -221,6 +219,18 @@ export default function Home() {
             </DialogActions>
           </Dialog>
           <List>
+            <ListItem
+              sx={
+                results.length === 0
+                  ? { display: "relative" }
+                  : { display: "none" }
+              }
+            >
+              <ListItemText>No Results</ListItemText>
+            </ListItem>
+            {/* <ListItem>
+              <ListItemText>No Results</ListItemText>
+            </ListItem> */}
             {results.map((charity) => (
               <ListItem
                 className="profile"
@@ -264,17 +274,6 @@ export default function Home() {
                   >
                     Learn More about {charity.name}
                   </Link>
-                  {/* <VolunteerActivismIcon
-                      onClick={() => handleDonateSubmit(charity)}
-                    />
-                    <Button
-                      variant="contained"
-                      onClick={() => handleDonateSubmit(charity)}
-                      // sx={{ float: "right" }}
-                    >
-                      Donate
-                    </Button> */}
-                  {/* </div> */}
                 </Box>
               </ListItem>
             ))}
