@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { CharitiesContext } from "../../state/charities/charities-context";
-import DefaultCoverImage from "../../images/charity-and-donation-icons-vector-merged-layers-gradient.jpg";
+import DefaultCoverImage from "../../images/rect-gradient.png";
 import {
   styled,
   IconButton,
@@ -19,6 +19,7 @@ import {
   CardContent,
   CardActions,
   Collapse,
+  Grid,
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
 import DefaultIcon from "../../images/default-charity-logo-transparent-edges.png";
@@ -30,10 +31,13 @@ export default function MyCharities() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState(charitiesState.charities);
-  const [selected, setSelected] = useState(null);
+  const [selectedCharity, setSelectedCharity] = useState(null);
+  const [selected, setSelected] = useState(false);
 
   const handleFocus = (event) => {
-    setAnchorEl(event.currentTarget);
+    if (!selected) setAnchorEl(event.currentTarget);
+    else setSelected(false);
+    console.log(anchorEl);
   };
 
   const handleClose = () => {
@@ -49,11 +53,13 @@ export default function MyCharities() {
       charity.name.toLowerCase().includes(value.toLowerCase())
     );
     setSearchResults(filteredCharities);
+    setSelected(false);
   }
 
   function handleCharitySelect(charity) {
-    setSelected(charity);
+    setSelectedCharity(charity);
     setSearchTerm(charity.name);
+    setSelected(true);
     setAnchorEl(null);
   }
 
@@ -63,10 +69,11 @@ export default function MyCharities() {
         <TextField
           variant="standard"
           label="search for a charity"
-          onChange={handleSearchTermChange}
           value={searchTerm}
+          onChange={handleSearchTermChange}
           onFocus={handleFocus}
           fullWidth
+          sx={{ marginBottom: "40px" }}
         />
         <Popover
           open={open}
@@ -78,6 +85,7 @@ export default function MyCharities() {
             horizontal: "left",
           }}
         >
+          {console.log(anchorEl)}
           <List>
             <ListItem
               sx={
@@ -97,17 +105,18 @@ export default function MyCharities() {
             ))}
           </List>
         </Popover>
-        {selected ? (
-          <>
-            <CharityCard charity={selected} /> <hr />
-          </>
-        ) : (
-          <br />
-        )}
-
-        {charitiesState.charities.map((charity) => (
-          <CharityCard charity={charity} />
-        ))}
+        {selectedCharity !== null && <CharityCard charity={selectedCharity} />}
+        <Typography variant="h4">Other charities you've donated to:</Typography>
+        <Grid container spacing={2}>
+          {charitiesState.charities.map(
+            (charity) =>
+              charity.name !== selectedCharity?.name && (
+                <Grid item xs={12} sm={6} lg={4}>
+                  <CharityCard charity={charity} />
+                </Grid>
+              )
+          )}
+        </Grid>
       </div>
     </div>
   );
@@ -131,7 +140,7 @@ function CharityCard(props) {
     setExpanded(!expanded);
   };
   return (
-    <Card>
+    <Card sx={{ boxShadow: "0 1px 8px rgba(0, 0, 0, 0.3)" }}>
       <CardMedia
         component="img"
         height="194"
