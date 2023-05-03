@@ -106,12 +106,14 @@ export default function MyCharities() {
           </List>
         </Popover>
         {selectedCharity !== null && <CharityCard charity={selectedCharity} />}
-        <Typography variant="h4">Other charities you've donated to:</Typography>
+        <Typography variant="h5" sx={{ margin: "40px 0 20px 0" }}>
+          Other charities you've donated to:
+        </Typography>
         <Grid container spacing={2}>
           {charitiesState.charities.map(
             (charity) =>
               charity.name !== selectedCharity?.name && (
-                <Grid item xs={12} sm={6} lg={4}>
+                <Grid item sm={12} md={6} lg={4}>
                   <CharityCard charity={charity} />
                 </Grid>
               )
@@ -145,7 +147,6 @@ function CharityCard(props) {
         component="img"
         height="194"
         image={charity.coverImageUrl || DefaultCoverImage}
-        alt="Paella dish"
       />
 
       <CardHeader title={charity.name} />
