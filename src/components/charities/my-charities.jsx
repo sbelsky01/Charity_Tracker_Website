@@ -149,7 +149,10 @@ function CharityCard(props) {
         image={charity.coverImageUrl || DefaultCoverImage}
       />
 
-      <CardHeader title={charity.name} />
+      <CardHeader
+        title={charity.name}
+        // avatar={<Avatar src={charity.logoUrl}></Avatar>}
+      ></CardHeader>
       <CardContent>
         <Typography variant="body2" color="text.secondary">
           {charity.description ? charity.description + "..." : ""}

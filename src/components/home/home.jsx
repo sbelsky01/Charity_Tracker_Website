@@ -38,7 +38,7 @@ export const searchTypes = {
 export default function Home() {
   const [keywordInput, setKeywordInput] = useState("");
   const [causeInput, setCauseInput] = useState("");
-  const [results, setResults] = useState([]);
+  const [results, setResults] = useState(null);
   const [donationAmt, setDonationAmt] = useState("");
   const [numSearchResults, setNumSearchResults] = useState(10);
   const [searchType, setSearchType] = useState("");
@@ -219,64 +219,61 @@ export default function Home() {
             </DialogActions>
           </Dialog>
           <List>
-            <ListItem
-              sx={
-                results.length === 0
-                  ? { display: "relative" }
-                  : { display: "none" }
-              }
-            >
-              <ListItemText>No Results</ListItemText>
-            </ListItem>
-            {/* <ListItem>
-              <ListItemText>No Results</ListItemText>
-            </ListItem> */}
-            {results.map((charity) => (
-              <ListItem
-                className="profile"
-                key={charity.ein}
-                alignItems="flex-start"
-                divider
-                secondaryAction={
-                  <IconButton
-                    edge="end"
-                    onClick={() => handleClickOpen(charity)}
-                  >
-                    <VolunteerActivismIcon />
-                  </IconButton>
-                }
-              >
-                <ListItemAvatar>
-                  <Avatar
-                    alt={charity.name + "logo"}
-                    src={charity.logoUrl || DefaultIcon}
-                  />
-                </ListItemAvatar>
-                <Box sx={{ width: "100%" }}>
-                  <ListItemText
-                    primary={charity.name}
-                    secondary={
-                      charity.description ? charity.description + "..." : ""
-                    }
-                  />
-                  {/* <div
+            {!results && (
+              <Typography sx={{ marginLeft: "30px" }}>
+                Please select a charity
+              </Typography>
+            )}
+            {results && results.length === 0 && (
+              <Typography sx={{ marginLeft: "30px" }}>No results</Typography>
+            )}
+            {results &&
+              results.map((charity) => (
+                <ListItem
+                  className="profile"
+                  key={charity.ein}
+                  alignItems="flex-start"
+                  divider
+                  secondaryAction={
+                    <IconButton
+                      edge="end"
+                      onClick={() => handleClickOpen(charity)}
+                    >
+                      <VolunteerActivismIcon />
+                    </IconButton>
+                  }
+                >
+                  <ListItemAvatar>
+                    <Avatar
+                      alt={charity.name + "logo"}
+                      src={charity.logoUrl || DefaultIcon}
+                    />
+                  </ListItemAvatar>
+                  <Box sx={{ width: "100%" }}>
+                    <ListItemText
+                      primary={charity.name}
+                      secondary={
+                        charity.description ? charity.description + "..." : ""
+                      }
+                    />
+                    {/* <div
                     style={{
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "end",
                     }}
                   > */}
-                  <Link
-                    href={charity.profileUrl}
-                    variant="body2"
-                    target="_blank"
-                    color="#36723a"
-                  >
-                    Learn More about {charity.name}
-                  </Link>
-                </Box>
-              </ListItem>
-            ))}
+                    <Link
+                      href={charity.profileUrl}
+                      variant="body2"
+                      target="_blank"
+                      color="#36723a"
+                    >
+                      Learn More about {charity.name}
+                    </Link>
+                  </Box>
+                </ListItem>
+              ))}
           </List>
         </div>
       </div>
