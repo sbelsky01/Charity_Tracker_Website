@@ -25,7 +25,7 @@ import {
 import { CharitiesContext } from "../../state/charities/charities-context";
 import { DonationActions } from "../../state/charities/charities-reducer";
 import { causes } from "./causes";
-import DefaultIcon from "../../images/default-charity-logo-transparent-edges.png";
+import DefaultIcon from "../../images/no_image_available.png";
 import VolunteerActivismIcon from "@mui/icons-material/VolunteerActivism";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 
@@ -123,16 +123,12 @@ export default function Home() {
   }
 
   function searchByCause(selectedCause) {
-    console.log(selectedCause);
     fetch(
-      `https://partners.every.org/v0.2/browse/${selectedCause}
-      ?apiKey=pk_live_7ff644bd22f350332599315a92d916e7&take=${numSearchResults}`
+      `https://partners.every.org/v0.2/browse/${selectedCause.trim()}?apiKey=pk_live_7ff644bd22f350332599315a92d916e7&take=${numSearchResults}`
     )
       .then((response) => response.json())
       .then((data) => {
         setResults(data.nonprofits);
-        console.log(`https://partners.every.org/v0.2/browse/${selectedCause}
-      ?apiKey=pk_live_7ff644bd22f350332599315a92d916e7&take=${numSearchResults}`);
       });
   }
 
@@ -140,6 +136,7 @@ export default function Home() {
     if (event.keyCode == 13) {
       event.target.blur();
       handleKeywordInputSubmit();
+      setCauseInput("");
     }
   }
 
@@ -152,14 +149,18 @@ export default function Home() {
         >
           <TextField
             variant="standard"
-            label="Search by Keyword"
+            label="Search by Name"
             value={keywordInput}
             onChange={handleKeywordInputChange}
             onKeyDown={checkForKeywordEnter}
           />
           <FormControl variant="standard" sx={{ minWidth: "150px" }}>
             <InputLabel id="cause-select-label">Select Cause</InputLabel>
-            <Select labelId="cause-select-label" defaultValue="">
+            <Select
+              labelId="cause-select-label"
+              // defaultValue=""
+              // value={causeInput}
+            >
               {causes.map((cause) => (
                 <MenuItem
                   key={cause.value}
@@ -221,7 +222,7 @@ export default function Home() {
           <List>
             {!results && (
               <Typography sx={{ marginLeft: "30px" }}>
-                Please select a charity
+                Enter a term or choose a cause to search for charities
               </Typography>
             )}
             {results && results.length === 0 && (

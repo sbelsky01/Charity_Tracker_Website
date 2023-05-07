@@ -12,7 +12,7 @@ export const charitiesReducer = (state, action) => {
         ...action.charity,
         donations: [],
       };
-      return { charities: [...state.charities, newCharity] };
+      return { ...state, charities: [...state.charities, newCharity] };
     }
     case DonationActions.DONATE: {
       let newCharities = cloneDeep(state.charities);
