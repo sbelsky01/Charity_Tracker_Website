@@ -1,4 +1,5 @@
 import React, { useState, useContext } from "react";
+import "./maaser.css";
 import {
   Button,
   Typography,
@@ -21,7 +22,8 @@ export default function Maaser() {
     <div className="App">
       <h1>Total Donated</h1>
       <h3>
-        <span>This year: {}</span> This month: {}
+        <span>This year: ${maaserState.yearDonations.amount}</span> This month:
+        ${maaserState.monthDonations.amount}
       </h3>
       <Typography variant="h1" sx={{ textAlign: "center" }}>
         Maaser: ${maaserState.maaser}
@@ -32,7 +34,7 @@ export default function Maaser() {
       </div>
       {maaserState.income &&
         maaserState.income.map((group) => (
-          <Accordion>
+          <Accordion defaultExpanded={group.year == "2023"}>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
               sx={{ backgroundColor: "lightgrey" }}
