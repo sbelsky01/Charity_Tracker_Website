@@ -125,15 +125,41 @@ export default function MyCharities() {
   return (
     <div className="App">
       <div className="content">
-        <TextField
-          variant="standard"
-          label="search for a charity"
-          value={searchTerm}
-          onChange={handleSearchTermChange}
-          onFocus={handleFocus}
-          fullWidth
-          sx={{ marginBottom: "40px" }}
-        />
+        <Grid container spacing={2}>
+          <Grid item sm={8}>
+            <TextField
+              variant="standard"
+              label="search for a charity"
+              value={searchTerm}
+              onChange={handleSearchTermChange}
+              onFocus={handleFocus}
+              fullWidth
+              sx={{ marginBottom: "40px" }}
+            />
+          </Grid>
+          <Grid
+            item
+            sm={4}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "flex-end",
+            }}
+          >
+            {maaserState.maaser > 0 ? (
+              <Typography
+                variant="h4"
+                sx={{ textAlign: "center", verticalAlign: "bottom" }}
+              >
+                Maaser: ${maaserState.maaser.toFixed(2)}
+              </Typography>
+            ) : (
+              <Typography variant="h4" sx={{ textAlign: "center" }}>
+                No maaser at this time
+              </Typography>
+            )}
+          </Grid>
+        </Grid>
         <Popover
           open={open}
           anchorEl={anchorEl}
