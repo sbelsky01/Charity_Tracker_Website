@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
 import { CharitiesContext } from "../../state/charities/charities-context";
+import { MaaserContext } from "../../state/maaser/maaser-context";
 import DefaultCoverImage from "../../images/rect-gradient.png";
 import {
   styled,
@@ -14,25 +15,36 @@ import {
   ListItemText,
   Card,
   CardHeader,
-  Avatar,
   CardMedia,
   CardContent,
   CardActions,
   Collapse,
   Grid,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Box,
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
 import DefaultIcon from "../../images/default-charity-logo-transparent-edges.png";
 import VolunteerActivismIcon from "@mui/icons-material/VolunteerActivism";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import { MaaserActions } from "../../state/maaser/maaser-reducer";
+import { DonationActions } from "../../state/charities/charities-reducer";
 
 export default function MyCharities() {
   const { charitiesState, charitiesDispatch } = useContext(CharitiesContext);
+  const { maaserState, maaserDispatch } = useContext(MaaserContext);
   const [anchorEl, setAnchorEl] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState(charitiesState.charities);
-  const [selectedCharity, setSelectedCharity] = useState(null);
+  const [selectedSearchTerm, setSelectedSearchTerm] = useState(null);
   const [selected, setSelected] = useState(false);
+  const [selectedCharity, setSelectedCharity] = useState({ name: "Every.org" });
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [donationAmt, setDonationAmt] = useState("");
 
   const handleFocus = (event) => {
     if (!selected) setAnchorEl(event.currentTarget);
@@ -57,10 +69,48 @@ export default function MyCharities() {
   }
 
   function handleCharitySelect(charity) {
-    setSelectedCharity(charity);
+    setSelectedSearchTerm(charity);
     setSearchTerm(charity.name);
     setSelected(true);
     setAnchorEl(null);
+  }
+
+  function handleClickOpen(charity) {
+    setSelectedCharity(charity);
+    setDialogOpen(true);
+  }
+
+  function handleDialogClose(donate) {
+    if (donate) {
+      processDonation();
+    }
+    setDialogOpen(false);
+    setDonationAmt("");
+  }
+
+  function handleDonationAmtChange(event) {
+    const amount = event.target.value;
+    if (amount === "" || /^\d+(\.\d{0,2})?$/.test(amount)) {
+      setDonationAmt(amount);
+    }
+  }
+
+  function processDonation() {
+    charitiesDispatch({
+      type: DonationActions.DONATE,
+      charity: selectedCharity,
+      amount: donationAmt,
+    });
+
+    maaserDispatch({
+      type: MaaserActions.ADD_DONATION_AMOUNT,
+      amount: donationAmt,
+    });
+
+    maaserDispatch({
+      type: MaaserActions.SUBTRACT_MAASER,
+      amount: donationAmt,
+    });
   }
 
   return (
@@ -105,16 +155,41 @@ export default function MyCharities() {
             ))}
           </List>
         </Popover>
-        {selectedCharity !== null && <CharityCard charity={selectedCharity} />}
+        {selectedSearchTerm && <CharityCard charity={selectedSearchTerm} />}
         <Typography variant="h5" sx={{ margin: "40px 0 20px 0" }}>
           Other charities you've donated to:
         </Typography>
+        <Dialog open={dialogOpen} onClose={() => handleDialogClose(false)}>
+          <DialogTitle>Donate to {selectedCharity.name}</DialogTitle>
+          <DialogContent>
+            <DialogContentText>Enter amount:</DialogContentText>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <AttachMoneyIcon />
+              <TextField
+                autoFocus
+                margin="dense"
+                fullWidth
+                variant="standard"
+                placeholder="xxx.xx"
+                value={donationAmt}
+                onChange={handleDonationAmtChange}
+              />
+            </Box>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => handleDialogClose(true)}>Donate</Button>
+            <Button onClick={() => handleDialogClose(false)}>Cancel</Button>
+          </DialogActions>
+        </Dialog>
         <Grid container spacing={2}>
           {charitiesState.charities.map(
             (charity) =>
-              charity.name !== selectedCharity?.name && (
+              charity.name !== selectedSearchTerm?.name && (
                 <Grid item sm={12} md={6} lg={4}>
-                  <CharityCard charity={charity} />
+                  <CharityCard
+                    charity={charity}
+                    handleClickOpen={handleClickOpen}
+                  />
                 </Grid>
               )
           )}
@@ -141,6 +216,11 @@ function CharityCard(props) {
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
+
+  function handleClickOpen() {
+    props.handleClickOpen(charity);
+  }
+
   return (
     <Card sx={{ boxShadow: "0 1px 8px rgba(0, 0, 0, 0.3)" }}>
       <CardMedia
@@ -149,10 +229,7 @@ function CharityCard(props) {
         image={charity.coverImageUrl || DefaultCoverImage}
       />
 
-      <CardHeader
-        title={charity.name}
-        // avatar={<Avatar src={charity.logoUrl}></Avatar>}
-      ></CardHeader>
+      <CardHeader title={charity.name}></CardHeader>
       <CardContent>
         <Typography variant="body2" color="text.secondary">
           {charity.description ? charity.description + "..." : ""}
@@ -168,7 +245,7 @@ function CharityCard(props) {
           <ExpandMoreWrapper expand={expanded} onClick={handleExpandClick}>
             <ExpandMore />
           </ExpandMoreWrapper>
-          <IconButton>
+          <IconButton onClick={() => handleClickOpen(charity)}>
             <VolunteerActivismIcon />
           </IconButton>
         </div>

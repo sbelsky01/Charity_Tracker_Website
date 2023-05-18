@@ -23,7 +23,9 @@ import {
   DialogActions,
 } from "@mui/material";
 import { CharitiesContext } from "../../state/charities/charities-context";
+import { MaaserContext } from "../../state/maaser/maaser-context";
 import { DonationActions } from "../../state/charities/charities-reducer";
+import { MaaserActions } from "../../state/maaser/maaser-reducer";
 import { causes } from "./causes";
 import DefaultIcon from "../../images/no_image_available.png";
 import VolunteerActivismIcon from "@mui/icons-material/VolunteerActivism";
@@ -46,6 +48,7 @@ export default function Home() {
   const [open, setOpen] = useState(false);
 
   const { charitiesState, charitiesDispatch } = useContext(CharitiesContext);
+  const { maaserState, maaserDispatch } = useContext(MaaserContext);
 
   function handleKeywordInputChange(event) {
     setKeywordInput(event.target.value);
@@ -107,6 +110,16 @@ export default function Home() {
     charitiesDispatch({
       type: DonationActions.DONATE,
       charity: selectedCharity,
+      amount: donationAmt,
+    });
+
+    maaserDispatch({
+      type: MaaserActions.ADD_DONATION_AMOUNT,
+      amount: donationAmt,
+    });
+
+    maaserDispatch({
+      type: MaaserActions.SUBTRACT_MAASER,
       amount: donationAmt,
     });
   }
@@ -257,13 +270,6 @@ export default function Home() {
                         charity.description ? charity.description + "..." : ""
                       }
                     />
-                    {/* <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "end",
-                    }}
-                  > */}
                     <Link
                       href={charity.profileUrl}
                       variant="body2"
