@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { CharitiesContext } from "../../state/charities/charities-context";
 import { MaaserContext } from "../../state/maaser/maaser-context";
 import DefaultCoverImage from "../../images/rect-gradient.png";
@@ -45,6 +45,7 @@ export default function MyCharities() {
   const [selectedCharity, setSelectedCharity] = useState({ name: "Every.org" });
   const [dialogOpen, setDialogOpen] = useState(false);
   const [donationAmt, setDonationAmt] = useState("");
+  const [showWarning, setShowWarning] = useState(false);
 
   const handleFocus = (event) => {
     if (!selected) setAnchorEl(event.currentTarget);
@@ -113,6 +114,14 @@ export default function MyCharities() {
     });
   }
 
+  useEffect(() => {
+    if (parseFloat(donationAmt) > parseFloat(maaserState.maaser)) {
+      setShowWarning(true);
+    } else {
+      setShowWarning(false);
+    }
+  }, [donationAmt]);
+
   return (
     <div className="App">
       <div className="content">
@@ -160,26 +169,52 @@ export default function MyCharities() {
           Other charities you've donated to:
         </Typography>
         <Dialog open={dialogOpen} onClose={() => handleDialogClose(false)}>
-          <DialogTitle>Donate to {selectedCharity.name}</DialogTitle>
-          <DialogContent>
-            <DialogContentText>Enter amount:</DialogContentText>
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <AttachMoneyIcon />
-              <TextField
-                autoFocus
-                margin="dense"
-                fullWidth
-                variant="standard"
-                placeholder="xxx.xx"
-                value={donationAmt}
-                onChange={handleDonationAmtChange}
-              />
-            </Box>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => handleDialogClose(true)}>Donate</Button>
-            <Button onClick={() => handleDialogClose(false)}>Cancel</Button>
-          </DialogActions>
+          <Box sx={{ width: "30vw" }}>
+            <DialogTitle>Donate to {selectedCharity.name}</DialogTitle>
+            <DialogContent>
+              <DialogContentText>Enter amount:</DialogContentText>
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <AttachMoneyIcon />
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  fullWidth
+                  variant="standard"
+                  placeholder="xxx.xx"
+                  value={donationAmt}
+                  onChange={handleDonationAmtChange}
+                />
+              </Box>
+              {showWarning && (
+                <Box sx={{ margin: "10px 20px 0 20px" }}>
+                  <Typography sx={{ color: "red", maxWidth: "100%" }}>
+                    You have entered an amount that is greater than your maaser.
+                  </Typography>
+                </Box>
+              )}
+              {!showWarning && <Box sx={{ height: "50px" }} />}
+            </DialogContent>
+
+            <DialogActions
+              sx={{ display: "flex", justifyContent: "space-between" }}
+            >
+              <div>
+                {maaserState.maaser > 0 ? (
+                  <Typography variant="body1" sx={{ textAlign: "center" }}>
+                    Maaser: ${maaserState.maaser.toFixed(2)}
+                  </Typography>
+                ) : (
+                  <Typography variant="body1" sx={{ textAlign: "center" }}>
+                    No maaser at this time
+                  </Typography>
+                )}
+              </div>
+              <div>
+                <Button onClick={() => handleDialogClose(true)}>Donate</Button>
+                <Button onClick={() => handleDialogClose(false)}>Cancel</Button>
+              </div>
+            </DialogActions>
+          </Box>
         </Dialog>
         <Grid container spacing={2}>
           {charitiesState.charities.map(

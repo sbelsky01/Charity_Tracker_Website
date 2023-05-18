@@ -46,6 +46,7 @@ export default function Home() {
   const [searchType, setSearchType] = useState("");
   const [selectedCharity, setSelectedCharity] = useState({ name: "Every.org" });
   const [open, setOpen] = useState(false);
+  const [showWarning, setShowWarning] = useState(false);
 
   const { charitiesState, charitiesDispatch } = useContext(CharitiesContext);
   const { maaserState, maaserDispatch } = useContext(MaaserContext);
@@ -98,6 +99,14 @@ export default function Home() {
       }
     }
   }, [numSearchResults]);
+
+  useEffect(() => {
+    if (parseFloat(donationAmt) > parseFloat(maaserState.maaser)) {
+      setShowWarning(true);
+    } else {
+      setShowWarning(false);
+    }
+  }, [donationAmt]);
 
   function processDonation() {
     if (!charitiesState.charities.find((x) => x.ein === selectedCharity.ein)) {
@@ -210,28 +219,60 @@ export default function Home() {
             minWidth: "300px",
           }}
         >
-          <Dialog open={open} onClose={() => handleClose(false)}>
-            <DialogTitle>Donate to {selectedCharity.name}</DialogTitle>
-            <DialogContent>
-              <DialogContentText>Enter amount:</DialogContentText>
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <AttachMoneyIcon />
-                <TextField
-                  autoFocus
-                  margin="dense"
-                  fullWidth
-                  variant="standard"
-                  placeholder="xxx.xx"
-                  value={donationAmt}
-                  onChange={handleDonationAmtChange}
-                />
-              </Box>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={() => handleClose(true)}>Donate</Button>
-              <Button onClick={() => handleClose(false)}>Cancel</Button>
-            </DialogActions>
+          <Dialog
+            open={open}
+            onClose={() => handleClose(false)}
+            sx={{ width: "100%" }}
+          >
+            <Box sx={{ width: "30vw" }}>
+              <DialogTitle>Donate to {selectedCharity.name}</DialogTitle>
+              <DialogContent>
+                <DialogContentText>Enter amount:</DialogContentText>
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <AttachMoneyIcon />
+                  <TextField
+                    autoFocus
+                    margin="dense"
+                    fullWidth
+                    variant="standard"
+                    placeholder="xxx.xx"
+                    value={donationAmt}
+                    onChange={handleDonationAmtChange}
+                  />
+                </Box>
+
+                {showWarning && (
+                  <Box sx={{ margin: "10px 20px 0 20px" }}>
+                    <Typography sx={{ color: "red", maxWidth: "100%" }}>
+                      You have entered an amount that is greater than your
+                      maaser.
+                    </Typography>
+                  </Box>
+                )}
+                {!showWarning && <Box sx={{ height: "50px" }} />}
+              </DialogContent>
+              <DialogActions
+                sx={{ display: "flex", justifyContent: "space-between" }}
+              >
+                <div>
+                  {maaserState.maaser > 0 ? (
+                    <Typography variant="body1" sx={{ textAlign: "center" }}>
+                      Maaser: ${maaserState.maaser.toFixed(2)}
+                    </Typography>
+                  ) : (
+                    <Typography variant="body1" sx={{ textAlign: "center" }}>
+                      No maaser at this time
+                    </Typography>
+                  )}
+                </div>
+                <div>
+                  <Button onClick={() => handleClose(true)}>Donate</Button>
+                  <Button onClick={() => handleClose(false)}>Cancel</Button>
+                </div>
+              </DialogActions>
+            </Box>
           </Dialog>
+
           <List>
             {!results && (
               <Typography sx={{ marginLeft: "30px" }}>
