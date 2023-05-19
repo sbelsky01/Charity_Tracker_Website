@@ -145,7 +145,11 @@ function AddIncomeDialog(props) {
           </FormControl>
         </Box>
         <FormControl>
-          <TextField value={dateEarned} onChange={handleDateChange} />
+          <TextField
+            type="date"
+            value={dateEarned}
+            onChange={handleDateChange}
+          />
         </FormControl>
       </DialogContent>
       <DialogActions>

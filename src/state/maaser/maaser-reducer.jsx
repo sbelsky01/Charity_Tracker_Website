@@ -10,7 +10,7 @@ export const MaaserActions = {
 
 export const maaserReducer = (state, action) => {
   function updateDonationCount() {
-    const now = new Date(2023, 5, 17);
+    const now = new Date();
     const thisYear = now.getFullYear();
     const thisMonth = now.getMonth();
     if (

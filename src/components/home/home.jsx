@@ -39,7 +39,8 @@ export default function Home() {
   const [donationAmt, setDonationAmt] = useState("");
   const [selectedCharity, setSelectedCharity] = useState({ name: "Every.org" });
   const [open, setOpen] = useState(false);
-  const [showWarning, setShowWarning] = useState(false);
+  const [showOverMaaserWarning, setShowOverMaaserWarning] = useState(false);
+  const [showEmptyInputWarning, setshowEmptyInputWarning] = useState(false);
 
   const { charitiesState, charitiesDispatch } = useContext(CharitiesContext);
   const { maaserState, maaserDispatch } = useContext(MaaserContext);
@@ -93,11 +94,21 @@ export default function Home() {
   }
 
   function handleClose(donate) {
+    setShowOverMaaserWarning(false);
     if (donate) {
-      processDonation();
+      if (!donationAmt == "" && parseFloat(donationAmt) > 0) {
+        processDonation();
+        setOpen(false);
+        setDonationAmt("");
+        setshowEmptyInputWarning(false);
+      } else {
+        setshowEmptyInputWarning(true);
+      }
+    } else {
+      setOpen(false);
+      setDonationAmt("");
+      setshowEmptyInputWarning(false);
     }
-    setOpen(false);
-    setDonationAmt("");
   }
 
   function handleDonationAmtChange(event) {
@@ -121,10 +132,11 @@ export default function Home() {
   }, [searchState.numSearchResults]);
 
   useEffect(() => {
+    setshowEmptyInputWarning(false);
     if (parseFloat(donationAmt) > parseFloat(maaserState.maaser)) {
-      setShowWarning(true);
+      setShowOverMaaserWarning(true);
     } else {
-      setShowWarning(false);
+      setShowOverMaaserWarning(false);
     }
   }, [donationAmt]);
 
@@ -265,16 +277,19 @@ export default function Home() {
                     onChange={handleDonationAmtChange}
                   />
                 </Box>
-
-                {showWarning && (
-                  <Box sx={{ margin: "10px 20px 0 20px" }}>
+                <Box sx={{ height: "40px", marginTop: "20px" }}>
+                  {showEmptyInputWarning && (
+                    <Typography sx={{ color: "red", maxWidth: "100%" }}>
+                      Please enter a valid number.
+                    </Typography>
+                  )}
+                  {showOverMaaserWarning && !showEmptyInputWarning && (
                     <Typography sx={{ color: "red", maxWidth: "100%" }}>
                       You have entered an amount that is greater than your
                       maaser.
                     </Typography>
-                  </Box>
-                )}
-                {!showWarning && <Box sx={{ height: "50px" }} />}
+                  )}
+                </Box>
               </DialogContent>
               <DialogActions
                 sx={{ display: "flex", justifyContent: "space-between" }}

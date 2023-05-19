@@ -28,7 +28,6 @@ import {
   Box,
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
-import DefaultIcon from "../../images/default-charity-logo-transparent-edges.png";
 import VolunteerActivismIcon from "@mui/icons-material/VolunteerActivism";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import { MaaserActions } from "../../state/maaser/maaser-reducer";
@@ -45,7 +44,8 @@ export default function MyCharities() {
   const [selectedCharity, setSelectedCharity] = useState({ name: "Every.org" });
   const [dialogOpen, setDialogOpen] = useState(false);
   const [donationAmt, setDonationAmt] = useState("");
-  const [showWarning, setShowWarning] = useState(false);
+  const [showOverMaaserWarning, setShowOverMaaserWarning] = useState(false);
+  const [showEmptyInputWarning, setshowEmptyInputWarning] = useState(false);
 
   const handleFocus = (event) => {
     if (!selected) setAnchorEl(event.currentTarget);
@@ -82,11 +82,21 @@ export default function MyCharities() {
   }
 
   function handleDialogClose(donate) {
+    setShowOverMaaserWarning(false);
     if (donate) {
-      processDonation();
+      if (!donationAmt == "" && parseFloat(donationAmt) > 0) {
+        processDonation();
+        setDialogOpen(false);
+        setDonationAmt("");
+        setshowEmptyInputWarning(false);
+      } else {
+        setshowEmptyInputWarning(true);
+      }
+    } else {
+      setDialogOpen(false);
+      setDonationAmt("");
+      setshowEmptyInputWarning(false);
     }
-    setDialogOpen(false);
-    setDonationAmt("");
   }
 
   function handleDonationAmtChange(event) {
@@ -115,10 +125,11 @@ export default function MyCharities() {
   }
 
   useEffect(() => {
+    setshowEmptyInputWarning(false);
     if (parseFloat(donationAmt) > parseFloat(maaserState.maaser)) {
-      setShowWarning(true);
+      setShowOverMaaserWarning(true);
     } else {
-      setShowWarning(false);
+      setShowOverMaaserWarning(false);
     }
   }, [donationAmt]);
 
@@ -216,14 +227,18 @@ export default function MyCharities() {
                   onChange={handleDonationAmtChange}
                 />
               </Box>
-              {showWarning && (
-                <Box sx={{ margin: "10px 20px 0 20px" }}>
+              <Box sx={{ height: "40px", marginTop: "20px" }}>
+                {showEmptyInputWarning && (
+                  <Typography sx={{ color: "red", maxWidth: "100%" }}>
+                    Please enter a valid number.
+                  </Typography>
+                )}
+                {showOverMaaserWarning && !showEmptyInputWarning && (
                   <Typography sx={{ color: "red", maxWidth: "100%" }}>
                     You have entered an amount that is greater than your maaser.
                   </Typography>
-                </Box>
-              )}
-              {!showWarning && <Box sx={{ height: "50px" }} />}
+                )}
+              </Box>
             </DialogContent>
 
             <DialogActions
