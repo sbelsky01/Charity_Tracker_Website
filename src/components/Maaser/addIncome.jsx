@@ -10,6 +10,8 @@ import {
   FormControl,
   TextField,
   Box,
+  Typography,
+  InputAdornment,
 } from "@mui/material";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 
@@ -18,11 +20,19 @@ export function AddIncomeDialog(props) {
   const open = props.open;
 
   const [description, setDescription] = useState("");
-  const [incomeAmt, setIncomeAmt] = useState();
-  const [dateEarned, setDateEarned] = useState(null);
+  const [incomeAmt, setIncomeAmt] = useState("");
+  const [dateEarned, setDateEarned] = useState("");
+  const [noDescriptionErr, setNoDescriptionErr] = useState(false);
+  const [noAmountErr, setNoAmountErr] = useState(false);
+  const [invalidAmountErr, setInvalidAmountErr] = useState(false);
+  const [noDateErr, setNoDateErr] = useState(false);
+  const [invalidDateErr, setInvalidDateErr] = useState(false);
 
   function handleIncomeAmtChange(event) {
-    setIncomeAmt(event.target.value);
+    const amount = event.target.value;
+    if (amount === "" || /^\d+(\.\d{0,2})?$/.test(amount)) {
+      setIncomeAmt(amount);
+    }
   }
 
   function handleDescriptionChange(event) {
@@ -34,68 +44,145 @@ export function AddIncomeDialog(props) {
   }
 
   function handleClose(submit) {
+    var error = false;
+    cancelErrors();
     if (submit) {
-      maaserDispatch({
-        type: MaaserActions.ADD_INCOME,
-        description: description,
-        amount: incomeAmt,
-        date: dateEarned,
-      });
+      if (description == "") {
+        setNoDescriptionErr(true);
+        error = true;
+      }
+      if (incomeAmt == "") {
+        setNoAmountErr(true);
+        error = true;
+      }
+      if (parseInt(incomeAmt) <= 0) {
+        setInvalidAmountErr(true);
+        error = true;
+      }
+      if (dateEarned == "") {
+        setNoDateErr(true);
+        error = true;
+      }
+      const now = new Date();
+      const date = new Date(dateEarned);
+      if (date > now) {
+        setInvalidDateErr(true);
+        error = true;
+      }
+      if (!error) {
+        maaserDispatch({
+          type: MaaserActions.ADD_INCOME,
+          description: description,
+          amount: incomeAmt,
+          date: dateEarned,
+        });
 
-      maaserDispatch({
-        type: MaaserActions.ADD_MAASER,
-        amount: incomeAmt,
-      });
+        maaserDispatch({
+          type: MaaserActions.ADD_MAASER,
+          amount: incomeAmt,
+        });
+
+        setDescription("");
+        setIncomeAmt("");
+        setDateEarned("");
+        props.handleClose();
+      }
+    } else {
+      setDescription("");
+      setIncomeAmt("");
+      setDateEarned("");
+      props.handleClose();
     }
-    setDescription("");
-    setIncomeAmt(null);
-    setDateEarned(null);
-    props.handleClose();
+  }
+
+  function cancelErrors() {
+    setNoDescriptionErr(false);
+    setNoAmountErr(false);
+    setInvalidAmountErr(false);
+    setNoDateErr(false);
+    setInvalidDateErr(false);
   }
 
   return (
     <Dialog open={open} onClose={() => handleClose(false)}>
-      <DialogTitle>Add Income</DialogTitle>
-      <DialogContent
-        sx={{ display: "flex", flexDirection: "column", alignItems: "end" }}
-        className="income-form"
-      >
-        <FormControl>
-          <TextField
-            multiline
-            fullWidth
-            rows={2}
-            variant="outlined"
-            placeholder="description"
-            value={description}
-            onChange={handleDescriptionChange}
-          />
-        </FormControl>
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <AttachMoneyIcon />
+      <Box sx={{ width: "30vw" }}>
+        <DialogTitle>Add Income</DialogTitle>
+        <DialogContent
+          sx={{ display: "flex", flexDirection: "column" }}
+          className="income-form"
+        >
+          <FormControl>
+            <TextField
+              multiline
+              fullWidth
+              rows={2}
+              variant="outlined"
+              placeholder="description"
+              value={description}
+              onChange={handleDescriptionChange}
+            />
+            <Box sx={{ height: "30px" }}>
+              {noDescriptionErr && (
+                <Typography variant="p" sx={{ color: "red", maxWidth: "100%" }}>
+                  Please enter a description.
+                </Typography>
+              )}
+            </Box>
+          </FormControl>
           <FormControl>
             <TextField
               autoFocus
               fullWidth
               variant="outlined"
-              placeholder="Amount"
+              placeholder="amount"
               value={incomeAmt}
               onChange={handleIncomeAmtChange}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <AttachMoneyIcon />
+                  </InputAdornment>
+                ),
+              }}
             />
+            <Box sx={{ height: "30px" }}>
+              {noAmountErr && (
+                <Typography variant="p" sx={{ color: "red", maxWidth: "100%" }}>
+                  Please enter an amount.
+                </Typography>
+              )}
+              {invalidAmountErr && (
+                <Typography variant="p" sx={{ color: "red", maxWidth: "100%" }}>
+                  Please enter a valid amount.
+                </Typography>
+              )}
+            </Box>
           </FormControl>
-        </Box>
-        <FormControl>
-          <TextField
-            type="date"
-            value={dateEarned}
-            onChange={handleDateChange}
-          />
-        </FormControl>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={() => handleClose(true)}>Add</Button>
-        <Button onClick={() => handleClose(false)}>Cancel</Button>
-      </DialogActions>
+          <FormControl>
+            <TextField
+              type="date"
+              value={dateEarned}
+              onChange={handleDateChange}
+            />
+            <Box sx={{ height: "30px" }}>
+              {noDateErr && (
+                <Typography variant="p" sx={{ color: "red", maxWidth: "100%" }}>
+                  Please enter a date.
+                </Typography>
+              )}
+              {invalidDateErr && (
+                <Typography variant="p" sx={{ color: "red", maxWidth: "100%" }}>
+                  Please enter a valid date.
+                </Typography>
+              )}
+            </Box>
+          </FormControl>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => handleClose(true)}>Add</Button>
+          <Button onClick={() => handleClose(false)}>Cancel</Button>
+        </DialogActions>
+      </Box>
     </Dialog>
   );
 }

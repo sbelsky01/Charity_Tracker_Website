@@ -32,17 +32,19 @@ export const maaserReducer = (state, action) => {
   switch (action.type) {
     case MaaserActions.ADD_INCOME: {
       let incomeYearList = cloneDeep(state.income);
+      const newDate = new Date(action.date);
+      const thisYear = newDate.getFullYear();
       const newListItem = {
         description: action.description,
         amt: action.amount,
         date: action.date,
       };
-      const now = new Date();
-      const thisYear = now.getFullYear();
+
       let thisYearIncome = incomeYearList.find((x) => x.year == thisYear);
       if (!thisYearIncome) {
         const newIncomeYear = { year: thisYear, list: [] };
         incomeYearList = [newIncomeYear, ...incomeYearList];
+        incomeYearList.sort((x, y) => y.year - x.year);
         thisYearIncome = newIncomeYear;
       }
       thisYearIncome.list = [...thisYearIncome.list, newListItem];

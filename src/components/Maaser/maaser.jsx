@@ -72,8 +72,11 @@ function IncomeAccordion(props) {
               <Typography> {group.year}</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              {group.list.map((incomeLine) => (
-                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+              {group.list.map((incomeLine, index) => (
+                <Box
+                  sx={{ display: "flex", justifyContent: "space-between" }}
+                  key={index}
+                >
                   <Box>
                     <Typography variant="h6">
                       {incomeLine.description}
