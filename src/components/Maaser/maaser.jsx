@@ -1,29 +1,14 @@
 import React, { useState, useContext, useEffect } from "react";
 import "./maaser.css";
-import {
-  Button,
-  Typography,
-  List,
-  ListItem,
-  ListItemText,
-  Box,
-  Divider,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-  TextField,
-  FormControl,
-} from "@mui/material";
+import { Button, Typography, Box, Divider } from "@mui/material";
 import { MaaserContext } from "../../state/maaser/maaser-context";
 import { months } from "./months.jsx";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import { MaaserActions } from "../../state/maaser/maaser-reducer";
+import { AddIncomeDialog } from "./addIncome";
 
 export default function Maaser() {
   const [open, setOpen] = useState(false);
@@ -70,93 +55,6 @@ export default function Maaser() {
       <AddIncomeDialog open={open} handleClose={handleClose} />
       <IncomeAccordion income={maaserState.income} />
     </div>
-  );
-}
-
-function AddIncomeDialog(props) {
-  const { maaserState, maaserDispatch } = useContext(MaaserContext);
-  const open = props.open;
-
-  const [description, setDescription] = useState("");
-  const [incomeAmt, setIncomeAmt] = useState();
-  const [dateEarned, setDateEarned] = useState(null);
-
-  function handleIncomeAmtChange(event) {
-    setIncomeAmt(event.target.value);
-  }
-
-  function handleDescriptionChange(event) {
-    setDescription(event.target.value);
-  }
-
-  function handleDateChange(event) {
-    setDateEarned(event.target.value);
-  }
-
-  function handleClose(submit) {
-    if (submit) {
-      maaserDispatch({
-        type: MaaserActions.ADD_INCOME,
-        description: description,
-        amount: incomeAmt,
-        date: dateEarned,
-      });
-
-      maaserDispatch({
-        type: MaaserActions.ADD_MAASER,
-        amount: incomeAmt,
-      });
-    }
-    setDescription("");
-    setIncomeAmt(null);
-    setDateEarned(null);
-    props.handleClose();
-  }
-
-  return (
-    <Dialog open={open} onClose={() => handleClose(false)}>
-      <DialogTitle>Add Income</DialogTitle>
-      <DialogContent
-        sx={{ display: "flex", flexDirection: "column", alignItems: "end" }}
-        className="income-form"
-      >
-        <FormControl>
-          <TextField
-            multiline
-            fullWidth
-            rows={2}
-            variant="outlined"
-            placeholder="description"
-            value={description}
-            onChange={handleDescriptionChange}
-          />
-        </FormControl>
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <AttachMoneyIcon />
-          <FormControl>
-            <TextField
-              autoFocus
-              fullWidth
-              variant="outlined"
-              placeholder="Amount"
-              value={incomeAmt}
-              onChange={handleIncomeAmtChange}
-            />
-          </FormControl>
-        </Box>
-        <FormControl>
-          <TextField
-            type="date"
-            value={dateEarned}
-            onChange={handleDateChange}
-          />
-        </FormControl>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={() => handleClose(true)}>Add</Button>
-        <Button onClick={() => handleClose(false)}>Cancel</Button>
-      </DialogActions>
-    </Dialog>
   );
 }
 

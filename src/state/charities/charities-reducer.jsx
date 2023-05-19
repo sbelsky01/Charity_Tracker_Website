@@ -17,12 +17,13 @@ export const charitiesReducer = (state, action) => {
     }
     case DonationActions.DONATE: {
       let newCharities = cloneDeep(state.charities);
+      const now = new Date();
       const updatedCharity = newCharities.find(
         (x) => x.ein === action.charity.ein
       );
       updatedCharity.donations = [
         ...updatedCharity.donations,
-        { date: "4/21/2023", amount: action.amount },
+        { date: now.toDateString(), amount: action.amount },
       ];
       updatedCharity.totalDonations =
         updatedCharity.totalDonations + parseFloat(action.amount);
