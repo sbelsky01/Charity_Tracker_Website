@@ -1,17 +1,17 @@
 {
   "files": {
     "main.css": "/Charity_Tracker_Website/static/css/main.33594b41.css",
-    "main.js": "/Charity_Tracker_Website/static/js/main.7d6a29b3.js",
+    "main.js": "/Charity_Tracker_Website/static/js/main.69e7654f.js",
     "static/js/787.7118effd.chunk.js": "/Charity_Tracker_Website/static/js/787.7118effd.chunk.js",
     "static/media/default-charity-logo-transparent-edges.png": "/Charity_Tracker_Website/static/media/default-charity-logo-transparent-edges.4c2ab76408263ce28f5e.png",
     "static/media/no_image_available.png": "/Charity_Tracker_Website/static/media/no_image_available.75d3035cb8f09077bb59.png",
     "index.html": "/Charity_Tracker_Website/index.html",
     "main.33594b41.css.map": "/Charity_Tracker_Website/static/css/main.33594b41.css.map",
-    "main.7d6a29b3.js.map": "/Charity_Tracker_Website/static/js/main.7d6a29b3.js.map",
+    "main.69e7654f.js.map": "/Charity_Tracker_Website/static/js/main.69e7654f.js.map",
     "787.7118effd.chunk.js.map": "/Charity_Tracker_Website/static/js/787.7118effd.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.33594b41.css",
-    "static/js/main.7d6a29b3.js"
+    "static/js/main.69e7654f.js"
   ]
 }
