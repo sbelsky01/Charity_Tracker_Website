@@ -6,6 +6,8 @@ import { CharitiesContext } from "./state/charities/charities-context";
 import { charitiesReducer } from "./state/charities/charities-reducer";
 import { MaaserContext } from "./state/maaser/maaser-context";
 import { maaserReducer } from "./state/maaser/maaser-reducer";
+import { SearchContext } from "./state/search/search-context";
+import { searchReducer } from "./state/search/search-reducer";
 import { Test } from "./Test";
 import Home from "./components/home/home";
 import MyCharities from "./components/charities/my-charities";
@@ -52,6 +54,13 @@ function App() {
     yearDonations: { year: null, amount: 0 },
     maaser: 0,
   });
+  const [searchState, searchDispatch] = useReducer(searchReducer, {
+    keywordInput: "",
+    causeInput: "",
+    numSearchResults: 10,
+    searchType: null,
+    results: null,
+  });
 
   return (
     <HashRouter>
@@ -59,11 +68,13 @@ function App() {
 
       <CharitiesContext.Provider value={{ charitiesState, charitiesDispatch }}>
         <MaaserContext.Provider value={{ maaserState, maaserDispatch }}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/my-charities" element={<MyCharities />} />
-            <Route path="/Maaser" element={<Maaser />} />
-          </Routes>
+          <SearchContext.Provider value={{ searchState, searchDispatch }}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/my-charities" element={<MyCharities />} />
+              <Route path="/Maaser" element={<Maaser />} />
+            </Routes>
+          </SearchContext.Provider>
         </MaaserContext.Provider>
       </CharitiesContext.Provider>
     </HashRouter>

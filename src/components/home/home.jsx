@@ -24,47 +24,67 @@ import {
 } from "@mui/material";
 import { CharitiesContext } from "../../state/charities/charities-context";
 import { MaaserContext } from "../../state/maaser/maaser-context";
+import { SearchContext, searchTypes } from "../../state/search/search-context";
 import { DonationActions } from "../../state/charities/charities-reducer";
 import { MaaserActions } from "../../state/maaser/maaser-reducer";
 import { causes } from "./causes";
 import DefaultIcon from "../../images/no_image_available.png";
 import VolunteerActivismIcon from "@mui/icons-material/VolunteerActivism";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import { SearchActions } from "../../state/search/search-reducer";
 
 const numResultsChoices = [10, 20, 30, 40, 50];
-export const searchTypes = {
-  KEYWORD: "KEYWORD",
-  CAUSE: "CAUSE",
-};
 
 export default function Home() {
-  const [keywordInput, setKeywordInput] = useState("");
-  const [causeInput, setCauseInput] = useState("");
-  const [results, setResults] = useState(null);
   const [donationAmt, setDonationAmt] = useState("");
-  const [numSearchResults, setNumSearchResults] = useState(10);
-  const [searchType, setSearchType] = useState("");
   const [selectedCharity, setSelectedCharity] = useState({ name: "Every.org" });
   const [open, setOpen] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
 
   const { charitiesState, charitiesDispatch } = useContext(CharitiesContext);
   const { maaserState, maaserDispatch } = useContext(MaaserContext);
+  const { searchState, searchDispatch } = useContext(SearchContext);
+  const results = searchState.results;
 
   function handleKeywordInputChange(event) {
-    setKeywordInput(event.target.value);
+    searchDispatch({
+      type: SearchActions.SET_KEYWORD_INPUT,
+      value: event.target.value,
+    });
+  }
+
+  function checkForKeywordEnter(event) {
+    if (event.keyCode == 13) {
+      event.target.blur();
+      handleKeywordInputSubmit();
+    }
   }
 
   function handleKeywordInputSubmit() {
-    setSearchType(searchTypes.KEYWORD);
+    searchDispatch({
+      type: SearchActions.SET_SEARCH_TYPE,
+      value: searchTypes.KEYWORD,
+    });
     searchByKeyword();
   }
 
   function handleCauseSelected(cause) {
-    console.log(cause);
-    setSearchType(searchTypes.CAUSE);
-    setCauseInput(cause);
+    searchDispatch({
+      type: SearchActions.SET_SEARCH_TYPE,
+      value: searchTypes.CAUSE,
+    });
+    searchDispatch({
+      type: SearchActions.SET_CAUSE_INPUT,
+      value: cause,
+    });
     searchByCause(cause);
+  }
+
+  function setNumSearchResults(number) {
+    searchDispatch({
+      type: SearchActions.SET_NUM_SEARCH_RESULTS,
+      value: number,
+    });
   }
 
   function handleClickOpen(charity) {
@@ -88,17 +108,17 @@ export default function Home() {
   }
 
   useEffect(() => {
-    switch (searchType) {
+    switch (searchState.searchType) {
       case searchTypes.KEYWORD: {
-        searchByKeyword(keywordInput);
+        searchByKeyword(searchState.keywordInput);
         break;
       }
       case searchTypes.CAUSE: {
-        searchByCause(causeInput);
+        searchByCause(searchState.causeInput);
         break;
       }
     }
-  }, [numSearchResults]);
+  }, [searchState.numSearchResults]);
 
   useEffect(() => {
     if (parseFloat(donationAmt) > parseFloat(maaserState.maaser)) {
@@ -135,31 +155,33 @@ export default function Home() {
 
   function searchByKeyword() {
     fetch(
-      `https://partners.every.org/v0.2/search/${keywordInput}
-      ?apiKey=pk_live_7ff644bd22f350332599315a92d916e7&take=${numSearchResults}`
+      `https://partners.every.org/v0.2/search/${searchState.keywordInput}
+      ?apiKey=pk_live_7ff644bd22f350332599315a92d916e7&take=${searchState.numSearchResults}`
     )
       .then((response) => response.json())
       .then((data) => {
-        setResults(data.nonprofits);
+        searchDispatch({
+          type: SearchActions.SET_RESULTS,
+          value: data.nonprofits,
+        });
+        // setResults(data.nonprofits);
       });
   }
 
   function searchByCause(selectedCause) {
     fetch(
-      `https://partners.every.org/v0.2/browse/${selectedCause.trim()}?apiKey=pk_live_7ff644bd22f350332599315a92d916e7&take=${numSearchResults}`
+      `https://partners.every.org/v0.2/browse/${selectedCause.trim()}?apiKey=pk_live_7ff644bd22f350332599315a92d916e7&take=${
+        searchState.numSearchResults
+      }`
     )
       .then((response) => response.json())
       .then((data) => {
-        setResults(data.nonprofits);
+        searchDispatch({
+          type: SearchActions.SET_RESULTS,
+          value: data.nonprofits,
+        });
+        // setResults(data.nonprofits);
       });
-  }
-
-  function checkForKeywordEnter(event) {
-    if (event.keyCode == 13) {
-      event.target.blur();
-      handleKeywordInputSubmit();
-      setCauseInput("");
-    }
   }
 
   return (
@@ -172,17 +194,16 @@ export default function Home() {
           <TextField
             variant="standard"
             label="Search by Name"
-            value={keywordInput}
+            value={searchState.keywordInput}
             onChange={handleKeywordInputChange}
             onKeyDown={checkForKeywordEnter}
+            onFocus={(e) =>
+              e.target.setSelectionRange(0, e.target.value.length)
+            }
           />
           <FormControl variant="standard" sx={{ minWidth: "150px" }}>
             <InputLabel id="cause-select-label">Select Cause</InputLabel>
-            <Select
-              labelId="cause-select-label"
-              // defaultValue=""
-              // value={causeInput}
-            >
+            <Select labelId="cause-select-label" value={searchState.causeInput}>
               {causes.map((cause) => (
                 <MenuItem
                   key={cause.value}
@@ -198,7 +219,11 @@ export default function Home() {
             <InputLabel id="num-results-select-label">
               Number of results
             </InputLabel>
-            <Select labelId="num-results-select-label" defaultValue={10}>
+            <Select
+              labelId="num-results-select-label"
+              defaultValue={10}
+              value={searchState.numSearchResults}
+            >
               {numResultsChoices.map((number) => (
                 <MenuItem
                   key={number}
