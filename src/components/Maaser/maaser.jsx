@@ -49,10 +49,10 @@ export default function Maaser() {
       <h1>Total Donated</h1>
       <h3>
         Total Donated in {maaserState.yearDonations.year}: $
-        {maaserState.yearDonations.amount}
+        {maaserState.yearDonations.amount.toFixed(2)}
         <br />
         Total Donated in {months[maaserState.monthDonations.month]}: $
-        {maaserState.monthDonations.amount}
+        {maaserState.monthDonations.amount.toFixed(2)}
       </h3>
       {maaserState.maaser > 0 ? (
         <Typography variant="h1" sx={{ textAlign: "center" }}>

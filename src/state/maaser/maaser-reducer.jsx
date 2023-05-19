@@ -57,8 +57,8 @@ export const maaserReducer = (state, action) => {
     case MaaserActions.ADD_DONATION_AMOUNT: {
       const newAmt = action.amount;
       state = updateDonationCount();
-      const newMonthAmt = state.monthDonations.amount + parseInt(newAmt);
-      const newYearAmt = state.yearDonations.amount + parseInt(newAmt);
+      const newMonthAmt = state.monthDonations.amount + parseFloat(newAmt);
+      const newYearAmt = state.yearDonations.amount + parseFloat(newAmt);
 
       return {
         ...state,

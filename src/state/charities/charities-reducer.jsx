@@ -11,6 +11,7 @@ export const charitiesReducer = (state, action) => {
       const newCharity = {
         ...action.charity,
         donations: [],
+        totalDonations: 0,
       };
       return { ...state, charities: [...state.charities, newCharity] };
     }
@@ -23,6 +24,8 @@ export const charitiesReducer = (state, action) => {
         ...updatedCharity.donations,
         { date: "4/21/2023", amount: action.amount },
       ];
+      updatedCharity.totalDonations =
+        updatedCharity.totalDonations + parseFloat(action.amount);
       return {
         charities: newCharities,
       };

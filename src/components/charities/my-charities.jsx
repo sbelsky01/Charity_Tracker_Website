@@ -190,7 +190,12 @@ export default function MyCharities() {
             ))}
           </List>
         </Popover>
-        {selectedSearchTerm && <CharityCard charity={selectedSearchTerm} />}
+        {selectedSearchTerm && (
+          <CharityCard
+            charity={selectedSearchTerm}
+            handleClickOpen={handleClickOpen}
+          />
+        )}
         <Typography variant="h5" sx={{ margin: "40px 0 20px 0" }}>
           Other charities you've donated to:
         </Typography>
@@ -296,16 +301,20 @@ function CharityCard(props) {
           {charity.description ? charity.description + "..." : ""}
         </Typography>
       </CardContent>
-      <CardActions disableSpacing>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-          }}
-        >
+      <CardActions
+        disableSpacing
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
+        <div>
           <ExpandMoreWrapper expand={expanded} onClick={handleExpandClick}>
             <ExpandMore />
           </ExpandMoreWrapper>
+          <Typography>Total Donated: ${charity.totalDonations}</Typography>
+        </div>
+        <div>
           <IconButton onClick={() => handleClickOpen(charity)}>
             <VolunteerActivismIcon />
           </IconButton>
