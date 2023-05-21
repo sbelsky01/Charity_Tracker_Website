@@ -35,6 +35,7 @@ import VolunteerActivismIcon from "@mui/icons-material/VolunteerActivism";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import { MaaserActions } from "../../state/maaser/maaser-reducer";
 import { DonationActions } from "../../state/charities/charities-reducer";
+import { months } from "../months";
 
 export default function MyCharities() {
   const { charitiesState, charitiesDispatch } = useContext(CharitiesContext);
@@ -77,6 +78,14 @@ export default function MyCharities() {
     setSearchTerm(charity.name);
     setSelected(true);
     setAnchorEl(null);
+  }
+
+  function getFormattedDate(dateString) {
+    const dateObj = new Date(dateString);
+    const year = dateObj.getFullYear();
+    const month = months[dateObj.getMonth()];
+    const date = dateObj.getDate();
+    return year + "\t" + month + " " + date;
   }
 
   function handleClickOpen(charity) {
@@ -387,20 +396,7 @@ function CharityCard(props) {
         </div>
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <CardContent
-          sx={
-            {
-              // position: "absolute",
-              // marginLeft: "20px",
-              // backgroundColor: "white",
-              // boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
-              // zIndex: 1,
-              // // visibility: expanded ? "visible" : "hidden",
-              // // opacity: expanded ? 1 : 0,
-              // transition: "visibility 0s, opacity 0.3s",
-            }
-          }
-        >
+        <CardContent>
           {charity.donations.map((donation) => (
             <p>
               {donation.date} {donation.amount}

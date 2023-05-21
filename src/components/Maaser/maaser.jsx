@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import "./maaser.css";
 import { Button, Typography, Box, Paper } from "@mui/material";
 import { MaaserContext } from "../../state/maaser/maaser-context";
-import { months } from "./months.jsx";
+import { months } from "../months.jsx";
 import { MaaserActions } from "../../state/maaser/maaser-reducer";
 import { AddIncomeDialog } from "./addIncome";
 import { IncomeAccordion } from "./incomeAccordion";

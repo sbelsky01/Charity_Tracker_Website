@@ -6,7 +6,7 @@ import {
   AccordionDetails,
   Divider,
 } from "@mui/material";
-import { months } from "./months.jsx";
+import { months } from "../months.jsx";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 export function IncomeAccordion(props) {
