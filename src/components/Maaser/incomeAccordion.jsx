@@ -19,8 +19,11 @@ export function IncomeAccordion(props) {
   }
 
   function getFormattedDate(dateString) {
-    const dateObj = new Date(dateString);
-    return months[dateObj.getMonth()] + " " + dateObj.getDate();
+    const dateParts = dateString.split("-");
+    const month = parseInt(dateParts[1]) - 1;
+    const day = parseInt(dateParts[2]);
+
+    return months[month] + " " + day;
   }
 
   function formatted(number) {

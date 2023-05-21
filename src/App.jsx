@@ -32,7 +32,6 @@ function App() {
 
   return (
     <HashRouter>
-      {/* <div className="root"> */}
       <Header />
       <CharitiesContext.Provider value={{ charitiesState, charitiesDispatch }}>
         <MaaserContext.Provider value={{ maaserState, maaserDispatch }}>
@@ -45,7 +44,6 @@ function App() {
           </SearchContext.Provider>
         </MaaserContext.Provider>
       </CharitiesContext.Provider>
-      {/* </div> */}
     </HashRouter>
   );
 }
