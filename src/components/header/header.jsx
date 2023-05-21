@@ -14,7 +14,7 @@ import FitbitIcon from "@mui/icons-material/Fitbit";
 
 const pages = [
   { name: "Home", path: "/" },
-  { name: "MyCharities", path: "/my-charities" },
+  { name: "Charities", path: "/my-charities" },
   { name: "Maaser", path: "/maaser" },
 ];
 

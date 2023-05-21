@@ -131,9 +131,7 @@ export function CharityCard(props) {
               boxShadow: "2px 8px 8px rgba(0, 0, 0, 0.3)",
               borderRadius: "7px",
               marginTop: "1px",
-              //   marginLeft: "10px",
-              //   borderBottomLeftRadius: "7px",
-              //   borderBottomRightRadius: "7px",
+              marginBottom: "30px",
             }}
           >
             <Typography variant="h6" sx={{ marginBottom: "19px" }}>

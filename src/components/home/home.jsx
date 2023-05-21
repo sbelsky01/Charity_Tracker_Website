@@ -261,7 +261,9 @@ export default function Home() {
             sx={{ width: "100%" }}
           >
             <Box sx={{ width: "30vw" }}>
-              <DialogTitle>Donate to {selectedCharity.name}</DialogTitle>
+              <DialogTitle sx={{ marginBottom: "20px" }}>
+                Donate to {selectedCharity.name}
+              </DialogTitle>
               <DialogContent>
                 <DialogContentText>Enter amount:</DialogContentText>
                 <Box sx={{ display: "flex", alignItems: "center" }}>
