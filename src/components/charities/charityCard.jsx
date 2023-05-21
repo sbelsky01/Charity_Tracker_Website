@@ -65,6 +65,15 @@ export function CharityCard(props) {
     return year + "\t" + month + " " + date;
   }
 
+  function formatted(number) {
+    return number.toLocaleString("en-US", {
+      style: "decimal",
+      useGrouping: true,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  }
+
   return (
     <Card
       sx={{
@@ -117,7 +126,7 @@ export function CharityCard(props) {
             </div>
             <div>
               <Typography sx={{ padding: "8px" }}>
-                Total Donated: ${charity.totalDonations}
+                Total Donated: ${formatted(parseFloat(charity.totalDonations))}
               </Typography>
             </div>
           </CardActions>
@@ -144,7 +153,7 @@ export function CharityCard(props) {
                 </div>
                 <div>
                   <Typography>
-                    ${parseFloat(donation.amount).toFixed(2)}
+                    ${formatted(parseFloat(donation.amount))}
                   </Typography>
                 </div>
               </div>

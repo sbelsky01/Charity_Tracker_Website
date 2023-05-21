@@ -26,6 +26,15 @@ export default function Maaser() {
     setOpen(false);
   }
 
+  function formatted(number) {
+    return number.toLocaleString("en-US", {
+      style: "decimal",
+      useGrouping: true,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  }
+
   return (
     <div className="App">
       <div className="content">
@@ -41,13 +50,13 @@ export default function Maaser() {
               <Typography variant="body1" fontSize="1.2em">
                 Donated this year:{" "}
                 <span style={{ fontWeight: "bold", fontSize: "1.1em" }}>
-                  ${maaserState.yearDonations.amount.toFixed(2)}
+                  ${formatted(maaserState.yearDonations.amount)}
                 </span>
               </Typography>
               <Typography variant="body1" fontSize="1.2em">
                 Donated this month:{" "}
                 <span style={{ fontWeight: "bold", fontSize: "1.1em" }}>
-                  ${maaserState.monthDonations.amount.toFixed(2)}
+                  ${formatted(maaserState.monthDonations.amount)}
                 </span>
               </Typography>
             </Box>
@@ -59,7 +68,7 @@ export default function Maaser() {
           className="maaser-total"
         >
           {maaserState.maaser > 0
-            ? "Maaser: $" + maaserState.maaser.toFixed(2)
+            ? "Maaser: $" + formatted(maaserState.maaser)
             : "No maaser at this time"}
         </Typography>
         <AddIncomeDialog open={open} handleClose={handleClose} />

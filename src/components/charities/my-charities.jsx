@@ -126,6 +126,15 @@ export default function MyCharities() {
     }
   }, [donationAmt]);
 
+  function formatted(number) {
+    return number.toLocaleString("en-US", {
+      style: "decimal",
+      useGrouping: true,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  }
+
   return (
     <div className="App">
       <div className="content">
@@ -156,7 +165,7 @@ export default function MyCharities() {
                   sx={{ textAlign: "center", verticalAlign: "bottom" }}
                   className="maaser-total"
                 >
-                  Maaser: ${maaserState.maaser.toFixed(2)}
+                  Maaser: ${formatted(maaserState.maaser)}
                 </Typography>
               ) : (
                 <Typography variant="h5" sx={{ textAlign: "center" }}>
@@ -240,7 +249,7 @@ export default function MyCharities() {
               <div className="maaser-total">
                 {maaserState.maaser > 0 ? (
                   <Typography variant="body1" sx={{ textAlign: "center" }}>
-                    Maaser: ${maaserState.maaser.toFixed(2)}
+                    Maaser: ${formatted(maaserState.maaser)}
                   </Typography>
                 ) : (
                   <Typography variant="body1" sx={{ textAlign: "center" }}>

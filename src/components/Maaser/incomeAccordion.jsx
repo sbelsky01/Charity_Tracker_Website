@@ -22,6 +22,15 @@ export function IncomeAccordion(props) {
     const dateObj = new Date(dateString);
     return months[dateObj.getMonth()] + " " + dateObj.getDate();
   }
+
+  function formatted(number) {
+    return number.toLocaleString("en-US", {
+      style: "decimal",
+      useGrouping: true,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  }
   return (
     <>
       {income &&
@@ -59,7 +68,7 @@ export function IncomeAccordion(props) {
                     </div>
                     <div>
                       <Typography variant="h6">
-                        ${parseFloat(incomeLine.amt).toFixed(2)}
+                        ${formatted(parseFloat(incomeLine.amt))}
                       </Typography>
                     </div>
                   </div>

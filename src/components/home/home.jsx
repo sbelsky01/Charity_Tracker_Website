@@ -196,6 +196,15 @@ export default function Home() {
     setResults("loading");
   }
 
+  function formatted(number) {
+    return number.toLocaleString("en-US", {
+      style: "decimal",
+      useGrouping: true,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  }
+
   return (
     <div className="App">
       <div className="charity-search">
@@ -298,7 +307,7 @@ export default function Home() {
                 <div className="maaser-total">
                   {maaserState.maaser > 0 ? (
                     <Typography variant="body1" sx={{ textAlign: "center" }}>
-                      Maaser: ${maaserState.maaser.toFixed(2)}
+                      Maaser: ${formatted(maaserState.maaser)}
                     </Typography>
                   ) : (
                     <Typography variant="body1" sx={{ textAlign: "center" }}>
