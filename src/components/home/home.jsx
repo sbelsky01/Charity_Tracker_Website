@@ -293,7 +293,7 @@ export default function Home() {
               <DialogActions
                 sx={{ display: "flex", justifyContent: "space-between" }}
               >
-                <div>
+                <div className="maaser-total">
                   {maaserState.maaser > 0 ? (
                     <Typography variant="body1" sx={{ textAlign: "center" }}>
                       Maaser: ${maaserState.maaser.toFixed(2)}

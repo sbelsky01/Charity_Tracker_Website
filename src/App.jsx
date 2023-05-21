@@ -57,20 +57,23 @@ function App() {
   });
 
   return (
-    <HashRouter>
-      <Header />
-
-      <CharitiesContext.Provider value={{ charitiesState, charitiesDispatch }}>
-        <MaaserContext.Provider value={{ maaserState, maaserDispatch }}>
-          <SearchContext.Provider value={{ searchState, searchDispatch }}>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/my-charities" element={<MyCharities />} />
-              <Route path="/Maaser" element={<Maaser />} />
-            </Routes>
-          </SearchContext.Provider>
-        </MaaserContext.Provider>
-      </CharitiesContext.Provider>
+    <HashRouter className="root">
+      <div className="root">
+        <Header />
+        <CharitiesContext.Provider
+          value={{ charitiesState, charitiesDispatch }}
+        >
+          <MaaserContext.Provider value={{ maaserState, maaserDispatch }}>
+            <SearchContext.Provider value={{ searchState, searchDispatch }}>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/my-charities" element={<MyCharities />} />
+                <Route path="/Maaser" element={<Maaser />} />
+              </Routes>
+            </SearchContext.Provider>
+          </MaaserContext.Provider>
+        </CharitiesContext.Provider>
+      </div>
     </HashRouter>
   );
 }

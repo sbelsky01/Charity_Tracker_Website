@@ -164,6 +164,7 @@ export default function MyCharities() {
                 <Typography
                   variant="h4"
                   sx={{ textAlign: "center", verticalAlign: "bottom" }}
+                  className="maaser-total"
                 >
                   Maaser: ${maaserState.maaser.toFixed(2)}
                 </Typography>
@@ -244,7 +245,7 @@ export default function MyCharities() {
             <DialogActions
               sx={{ display: "flex", justifyContent: "space-between" }}
             >
-              <div>
+              <div className="maaser-total">
                 {maaserState.maaser > 0 ? (
                   <Typography variant="body1" sx={{ textAlign: "center" }}>
                     Maaser: ${maaserState.maaser.toFixed(2)}
