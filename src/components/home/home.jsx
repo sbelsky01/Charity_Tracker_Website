@@ -30,7 +30,7 @@ import { DonationActions } from "../../state/charities/charities-reducer";
 import { MaaserActions } from "../../state/maaser/maaser-reducer";
 import { causes } from "./causes";
 import DefaultIcon from "../../images/no_image_available.png";
-import Logo from "../../images/logo.png";
+import Logo from "../../images/charitytracker.png";
 import VolunteerActivismIcon from "@mui/icons-material/VolunteerActivism";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import { SearchActions } from "../../state/search/search-reducer";

@@ -60,11 +60,25 @@ export default function Maaser() {
 
 function IncomeAccordion(props) {
   const income = props.income;
+  const [expandedPanel, setExpandedPanel] = useState("");
+
+  function handleToggle(year) {
+    year == expandedPanel ? setExpandedPanel("") : setExpandedPanel(year);
+  }
+
+  function getFormattedDate(dateString) {
+    const dateObj = new Date(dateString);
+    return months[dateObj.getMonth()] + " " + dateObj.getDate();
+  }
   return (
     <>
       {income &&
         income.map((group) => (
-          <Accordion defaultExpanded={group.year == "2023"} key={group.year}>
+          <Accordion
+            key={group.year}
+            expanded={expandedPanel == group.year}
+            onChange={() => handleToggle(group.year)}
+          >
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
               sx={{ backgroundColor: "lightgrey" }}
@@ -73,19 +87,31 @@ function IncomeAccordion(props) {
             </AccordionSummary>
             <AccordionDetails>
               {group.list.map((incomeLine, index) => (
-                <Box
-                  sx={{ display: "flex", justifyContent: "space-between" }}
-                  key={index}
-                >
-                  <Box>
-                    <Typography variant="h6">
-                      {incomeLine.description}
-                    </Typography>
-                    <Typography>{incomeLine.date}</Typography>
-                  </Box>
-                  <Typography> ${incomeLine.amt}</Typography>
+                <div style={{ margin: "8px 25px" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "flex-end",
+                      paddingRight: "4px",
+                    }}
+                  >
+                    <div>
+                      <Typography variant="h6">
+                        {incomeLine.description}
+                      </Typography>
+                      <Typography>
+                        {getFormattedDate(incomeLine.date)}
+                      </Typography>
+                    </div>
+                    <div>
+                      <Typography variant="h6">
+                        ${parseFloat(incomeLine.amt).toFixed(2)}
+                      </Typography>
+                    </div>
+                  </div>
                   <Divider />
-                </Box>
+                </div>
               ))}
             </AccordionDetails>
           </Accordion>

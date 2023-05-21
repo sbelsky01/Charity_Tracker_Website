@@ -2,3 +2,11 @@
   margin-top: 10px;
   margin-bottom: 10px;
 }
+
+.Mui-expanded {
+  margin: 3px auto !important;
+}
+
+.App {
+  min-height: 90vh;
+}

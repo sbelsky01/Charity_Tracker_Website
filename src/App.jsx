@@ -22,25 +22,25 @@ function App() {
       {
         year: 2023,
         list: [
-          { description: "Paycheck", amt: 800, date: "Mar. 23" },
-          { description: "Paycheck", amt: 800, date: "Apr. 23" },
-          { description: "Paycheck", amt: 800, date: "May. 23" },
+          { description: "Paycheck", amt: 800, date: "2023-02-23" },
+          { description: "Paycheck", amt: 800, date: "2023-04-23" },
+          { description: "Paycheck", amt: 800, date: "2023-05-23" },
         ],
       },
       {
         year: 2022,
         list: [
-          { description: "Paycheck", amt: 800, date: "Mar. 23" },
-          { description: "Bonus", amt: 300, date: "Apr. 6" },
-          { description: "Paycheck", amt: 800, date: "May. 23" },
+          { description: "Paycheck", amt: 800, date: "2022-03-23" },
+          { description: "Bonus", amt: 300, date: "2022-04-06" },
+          { description: "Paycheck", amt: 800, date: "2022-05-23" },
         ],
       },
       {
         year: 2021,
         list: [
-          { description: "Paycheck", amt: 800, date: "Mar. 23" },
-          { description: "Bonus", amt: 300, date: "Sept. 6" },
-          { description: "Paycheck", amt: 800, date: "May. 23" },
+          { description: "Paycheck", amt: 800, date: "2021-03-23" },
+          { description: "Bonus", amt: 300, date: "2021-09-06" },
+          { description: "Paycheck", amt: 800, date: "2021-05-23" },
         ],
       },
     ],

@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import { CharitiesContext } from "../../state/charities/charities-context";
 import { MaaserContext } from "../../state/maaser/maaser-context";
 import DefaultCoverImage from "../../images/rect-gradient.png";
+import "./my-charities.css";
 import {
   styled,
   IconButton,
@@ -268,12 +269,13 @@ export default function MyCharities() {
             </Typography>
             <Grid container spacing={2}>
               {charitiesState.charities.map(
-                (charity) =>
+                (charity, index) =>
                   charity.name !== selectedSearchTerm?.name && (
                     <Grid item sm={12} md={6} lg={4}>
                       <CharityCard
                         charity={charity}
                         handleClickOpen={handleClickOpen}
+                        key={index}
                       />
                     </Grid>
                   )
@@ -304,12 +306,13 @@ export default function MyCharities() {
                 margin: "0 50px",
               }}
             >
-              {Array.from(Array(3), () => (
+              {Array.from(Array(3), (value, index) => (
                 <Skeleton
                   variant="rounded"
                   sx={{ width: "30%" }}
                   height={220}
                   animation="wave"
+                  key={index}
                 />
               ))}
             </div>
@@ -343,49 +346,67 @@ function CharityCard(props) {
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-      <Card sx={{ boxShadow: "0 1px 8px rgba(0, 0, 0, 0.3)" }}>
-        <CardMedia
-          component="img"
-          height="194"
-          image={charity.coverImageUrl || DefaultCoverImage}
-        />
+    <Card sx={{ boxShadow: "0 1px 8px rgba(0, 0, 0, 0.3)" }}>
+      <CardMedia
+        component="img"
+        height="194"
+        image={charity.coverImageUrl || DefaultCoverImage}
+      />
 
-        <CardHeader title={charity.name}></CardHeader>
-        <CardContent>
-          <Typography variant="body2" color="text.secondary">
-            {charity.description ? charity.description + "..." : ""}
+      <CardHeader title={charity.name}></CardHeader>
+      <CardContent>
+        <Typography variant="body2" color="text.secondary">
+          {charity.description ? charity.description + "..." : ""}
+        </Typography>
+      </CardContent>
+      <CardActions
+        disableSpacing
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <div style={{ display: "flex" }}>
+          <ExpandMoreWrapper
+            expand={expanded}
+            onClick={handleExpandClick}
+            sx={{ padding: "0, auto", marginTop: "8px" }}
+          >
+            <ExpandMore />
+          </ExpandMoreWrapper>
+          <IconButton onClick={() => handleClickOpen(charity)}>
+            <VolunteerActivismIcon />
+          </IconButton>
+        </div>
+        <div>
+          <Typography sx={{ padding: "8px" }}>
+            Total Donated: ${charity.totalDonations}
           </Typography>
-        </CardContent>
-        <CardActions
-          disableSpacing
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-          }}
+        </div>
+      </CardActions>
+      <Collapse in={expanded} timeout="auto" unmountOnExit>
+        <CardContent
+          sx={
+            {
+              // position: "absolute",
+              // marginLeft: "20px",
+              // backgroundColor: "white",
+              // boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+              // zIndex: 1,
+              // // visibility: expanded ? "visible" : "hidden",
+              // // opacity: expanded ? 1 : 0,
+              // transition: "visibility 0s, opacity 0.3s",
+            }
+          }
         >
-          <div>
-            <ExpandMoreWrapper expand={expanded} onClick={handleExpandClick}>
-              <ExpandMore />
-            </ExpandMoreWrapper>
-            <Typography>Total Donated: ${charity.totalDonations}</Typography>
-          </div>
-          <div>
-            <IconButton onClick={() => handleClickOpen(charity)}>
-              <VolunteerActivismIcon />
-            </IconButton>
-          </div>
-        </CardActions>
-        <Collapse in={expanded} timeout="auto" unmountOnExit>
-          <CardContent>
-            {charity.donations.map((donation) => (
-              <p>
-                {donation.date} {donation.amount}
-              </p>
-            ))}
-          </CardContent>
-        </Collapse>
-      </Card>
-    </div>
+          {charity.donations.map((donation) => (
+            <p>
+              {donation.date} {donation.amount}
+            </p>
+          ))}
+        </CardContent>
+      </Collapse>
+    </Card>
   );
 }
