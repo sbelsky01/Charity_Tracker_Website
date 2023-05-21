@@ -12,6 +12,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 export function IncomeAccordion(props) {
   const income = props.income;
   const [expandedPanel, setExpandedPanel] = useState("");
+  const now = new Date();
 
   function handleToggle(year) {
     year == expandedPanel ? setExpandedPanel("") : setExpandedPanel(year);
@@ -29,6 +30,7 @@ export function IncomeAccordion(props) {
             key={group.year}
             expanded={expandedPanel == group.year}
             onChange={() => handleToggle(group.year)}
+            defaultExpanded={group.year == now.getFullYear()}
           >
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
@@ -38,7 +40,7 @@ export function IncomeAccordion(props) {
             </AccordionSummary>
             <AccordionDetails>
               {group.list.map((incomeLine, index) => (
-                <div style={{ margin: "8px 25px" }}>
+                <div style={{ margin: "8px 25px" }} key={index}>
                   <div
                     style={{
                       display: "flex",

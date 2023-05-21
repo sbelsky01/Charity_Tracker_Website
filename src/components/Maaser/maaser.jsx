@@ -29,11 +29,7 @@ export default function Maaser() {
   return (
     <div className="App">
       <div className="content">
-        <div
-          style={{
-            display: "flex",
-          }}
-        >
+        <div>
           <div style={{ marginRight: "50px" }}>
             <Typography variant="h3">
               {months[maaserState.monthDonations.month]}{" "}
@@ -43,41 +39,66 @@ export default function Maaser() {
           <div>
             <Box>
               <Typography variant="body1" fontSize="1.2em">
-                Total donated this year: $
-                {maaserState.yearDonations.amount.toFixed(2)}
+                Donated this year:{" "}
+                <span style={{ fontWeight: "bold", fontSize: "1.1em" }}>
+                  ${maaserState.yearDonations.amount.toFixed(2)}
+                </span>
               </Typography>
               <Typography variant="body1" fontSize="1.2em">
-                Total donated this month: $
-                {maaserState.monthDonations.amount.toFixed(2)}
+                Donated this month:{" "}
+                <span style={{ fontWeight: "bold", fontSize: "1.1em" }}>
+                  ${maaserState.monthDonations.amount.toFixed(2)}
+                </span>
               </Typography>
             </Box>
           </div>
         </div>
-        {maaserState.maaser > 0 ? (
-          <Typography
-            variant="h2"
-            sx={{ textAlign: "center", margin: "50px auto" }}
-            className="maaser-total"
-          >
-            Maaser: ${maaserState.maaser.toFixed(2)}
-          </Typography>
-        ) : (
-          <Typography variant="h3" sx={{ textAlign: "center" }}>
-            No maaser at this time
-          </Typography>
-        )}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            // marginTop: "70px",
-          }}
+        <Typography
+          variant="h2"
+          sx={{ textAlign: "center", margin: "70px auto" }}
+          className="maaser-total"
         >
-          <Typography variant="h4">Income</Typography>
-          <Button onClick={handleClickOpen}>Add Income</Button>
-        </div>
+          {maaserState.maaser > 0
+            ? "Maaser: $" + maaserState.maaser.toFixed(2)
+            : "No maaser at this time"}
+        </Typography>
         <AddIncomeDialog open={open} handleClose={handleClose} />
-        <IncomeAccordion income={maaserState.income} />
+        {maaserState.income.length >= 1 ? (
+          <>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginBottom: "20px",
+              }}
+            >
+              <Typography variant="h4">Income</Typography>
+              <Button onClick={handleClickOpen} variant="outlined">
+                Add Income
+              </Button>
+            </div>
+            <IncomeAccordion income={maaserState.income} />
+          </>
+        ) : (
+          <>
+            <Typography
+              variant="body1"
+              sx={{ textAlign: "center", marginBottom: "20px" }}
+              fontSize="1.1em"
+            >
+              Welcome to the Income Tracker! Start tracking your income and
+              managing your Maaser with ease. To get started, click the button
+              below to add your first income entry.
+            </Typography>
+            <Button
+              onClick={handleClickOpen}
+              variant="outlined"
+              sx={{ display: "block", margin: "0 auto" }}
+            >
+              Add Income
+            </Button>
+          </>
+        )}
       </div>
     </div>
   );
