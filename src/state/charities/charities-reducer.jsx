@@ -22,8 +22,8 @@ export const charitiesReducer = (state, action) => {
         (x) => x.ein === action.charity.ein
       );
       updatedCharity.donations = [
-        ...updatedCharity.donations,
         { date: now.toDateString(), amount: action.amount },
+        ...updatedCharity.donations,
       ];
       updatedCharity.totalDonations =
         updatedCharity.totalDonations + parseFloat(action.amount);

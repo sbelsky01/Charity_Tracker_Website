@@ -1,11 +1,8 @@
 import React, { useContext, useState, useEffect } from "react";
 import { CharitiesContext } from "../../state/charities/charities-context";
 import { MaaserContext } from "../../state/maaser/maaser-context";
-import DefaultCoverImage from "../../images/rect-gradient.png";
 import "./my-charities.css";
 import {
-  styled,
-  IconButton,
   TextField,
   Button,
   Popover,
@@ -14,12 +11,6 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
-  Card,
-  CardHeader,
-  CardMedia,
-  CardContent,
-  CardActions,
-  Collapse,
   Grid,
   Dialog,
   DialogTitle,
@@ -30,12 +21,10 @@ import {
   Paper,
   Skeleton,
 } from "@mui/material";
-import { ExpandMore } from "@mui/icons-material";
-import VolunteerActivismIcon from "@mui/icons-material/VolunteerActivism";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import { MaaserActions } from "../../state/maaser/maaser-reducer";
 import { DonationActions } from "../../state/charities/charities-reducer";
-import { months } from "../months";
+import { CharityCard } from "./charityCard";
 
 export default function MyCharities() {
   const { charitiesState, charitiesDispatch } = useContext(CharitiesContext);
@@ -78,14 +67,6 @@ export default function MyCharities() {
     setSearchTerm(charity.name);
     setSelected(true);
     setAnchorEl(null);
-  }
-
-  function getFormattedDate(dateString) {
-    const dateObj = new Date(dateString);
-    const year = dateObj.getFullYear();
-    const month = months[dateObj.getMonth()];
-    const date = dateObj.getDate();
-    return year + "\t" + month + " " + date;
   }
 
   function handleClickOpen(charity) {
@@ -277,20 +258,30 @@ export default function MyCharities() {
             <Typography variant="h5" sx={{ margin: "40px 0 20px 0" }}>
               Other charities you've donated to:
             </Typography>
-            <Grid container spacing={2}>
-              {charitiesState.charities.map(
-                (charity, index) =>
-                  charity.name !== selectedSearchTerm?.name && (
-                    <Grid item sm={12} md={6} lg={4}>
-                      <CharityCard
-                        charity={charity}
-                        handleClickOpen={handleClickOpen}
-                        key={index}
-                      />
-                    </Grid>
-                  )
-              )}
-            </Grid>
+            <div className="col-container">
+              <Grid container spacing={2}>
+                {charitiesState.charities.map(
+                  (charity, index) =>
+                    charity.name !== selectedSearchTerm?.name && (
+                      <Grid item sm={12} md={6} lg={4}>
+                        <div
+                          style={{
+                            display: "flex",
+                            height: "100%",
+                            width: "100%",
+                          }}
+                        >
+                          <CharityCard
+                            charity={charity}
+                            handleClickOpen={handleClickOpen}
+                            key={index}
+                          />
+                        </div>
+                      </Grid>
+                    )
+                )}
+              </Grid>
+            </div>
           </>
         ) : (
           <>
@@ -330,80 +321,5 @@ export default function MyCharities() {
         )}
       </div>
     </div>
-  );
-}
-
-const ExpandMoreWrapper = styled((props) => {
-  const { expand, ...other } = props;
-  return <IconButton {...other} />;
-})(({ theme, expand }) => ({
-  transform: !expand ? "rotate(0deg)" : "rotate(180deg)",
-  marginLeft: "auto",
-  transition: theme.transitions.create("transform", {
-    duration: theme.transitions.duration.shortest,
-  }),
-}));
-
-function CharityCard(props) {
-  const charity = props.charity;
-  const [expanded, setExpanded] = useState(false);
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
-
-  function handleClickOpen() {
-    props.handleClickOpen(charity);
-  }
-
-  return (
-    <Card sx={{ boxShadow: "0 1px 8px rgba(0, 0, 0, 0.3)" }}>
-      <CardMedia
-        component="img"
-        height="194"
-        image={charity.coverImageUrl || DefaultCoverImage}
-      />
-
-      <CardHeader title={charity.name}></CardHeader>
-      <CardContent>
-        <Typography variant="body2" color="text.secondary">
-          {charity.description ? charity.description + "..." : ""}
-        </Typography>
-      </CardContent>
-      <CardActions
-        disableSpacing
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <div style={{ display: "flex" }}>
-          <ExpandMoreWrapper
-            expand={expanded}
-            onClick={handleExpandClick}
-            sx={{ padding: "0, auto", marginTop: "8px" }}
-          >
-            <ExpandMore />
-          </ExpandMoreWrapper>
-          <IconButton onClick={() => handleClickOpen(charity)}>
-            <VolunteerActivismIcon />
-          </IconButton>
-        </div>
-        <div>
-          <Typography sx={{ padding: "8px" }}>
-            Total Donated: ${charity.totalDonations}
-          </Typography>
-        </div>
-      </CardActions>
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <CardContent>
-          {charity.donations.map((donation) => (
-            <p>
-              {donation.date} {donation.amount}
-            </p>
-          ))}
-        </CardContent>
-      </Collapse>
-    </Card>
   );
 }
