@@ -8,7 +8,6 @@ import { MaaserContext } from "./state/maaser/maaser-context";
 import { maaserReducer } from "./state/maaser/maaser-reducer";
 import { SearchContext } from "./state/search/search-context";
 import { searchReducer } from "./state/search/search-reducer";
-import { Test } from "./Test";
 import Home from "./components/home/home";
 import MyCharities from "./components/charities/my-charities";
 import Maaser from "./components/Maaser/maaser";
@@ -57,23 +56,21 @@ function App() {
   });
 
   return (
-    <HashRouter className="root">
-      <div className="root">
-        <Header />
-        <CharitiesContext.Provider
-          value={{ charitiesState, charitiesDispatch }}
-        >
-          <MaaserContext.Provider value={{ maaserState, maaserDispatch }}>
-            <SearchContext.Provider value={{ searchState, searchDispatch }}>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/my-charities" element={<MyCharities />} />
-                <Route path="/Maaser" element={<Maaser />} />
-              </Routes>
-            </SearchContext.Provider>
-          </MaaserContext.Provider>
-        </CharitiesContext.Provider>
-      </div>
+    <HashRouter>
+      {/* <div className="root"> */}
+      <Header />
+      <CharitiesContext.Provider value={{ charitiesState, charitiesDispatch }}>
+        <MaaserContext.Provider value={{ maaserState, maaserDispatch }}>
+          <SearchContext.Provider value={{ searchState, searchDispatch }}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/my-charities" element={<MyCharities />} />
+              <Route path="/Maaser" element={<Maaser />} />
+            </Routes>
+          </SearchContext.Provider>
+        </MaaserContext.Provider>
+      </CharitiesContext.Provider>
+      {/* </div> */}
     </HashRouter>
   );
 }
