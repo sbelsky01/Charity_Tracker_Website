@@ -3,7 +3,6 @@ export const SearchActions = {
   SET_CAUSE_INPUT: "SET_CAUSE_INPUT",
   SET_NUM_SEARCH_RESULTS: "SET_NUM_SEARCH_RESULTS",
   SET_SEARCH_TYPE: "SET_SEARCH_TYPE",
-  SET_RESULTS: "SET_RESULTS",
 };
 
 export const searchReducer = (state, action) => {
@@ -22,10 +21,6 @@ export const searchReducer = (state, action) => {
 
     case SearchActions.SET_SEARCH_TYPE: {
       return { ...state, searchType: action.value };
-    }
-
-    case SearchActions.SET_RESULTS: {
-      return { ...state, results: action.value };
     }
   }
 };

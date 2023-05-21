@@ -26,6 +26,8 @@ import {
   DialogContentText,
   DialogActions,
   Box,
+  Paper,
+  Skeleton,
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
 import VolunteerActivismIcon from "@mui/icons-material/VolunteerActivism";
@@ -136,41 +138,42 @@ export default function MyCharities() {
   return (
     <div className="App">
       <div className="content">
-        <Grid container spacing={2}>
-          <Grid item sm={8}>
-            <TextField
-              variant="standard"
-              label="search for a charity"
-              value={searchTerm}
-              onChange={handleSearchTermChange}
-              onFocus={handleFocus}
-              fullWidth
-              sx={{ marginBottom: "40px" }}
-            />
+        <div className="top-row" style={{ marginBottom: "70px" }}>
+          <Grid container spacing={2}>
+            <Grid item sm={8}>
+              <TextField
+                variant="standard"
+                label="search for a charity"
+                value={searchTerm}
+                onChange={handleSearchTermChange}
+                onFocus={handleFocus}
+                fullWidth
+              />
+            </Grid>
+            <Grid
+              item
+              sm={4}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "flex-end",
+              }}
+            >
+              {maaserState.maaser > 0 ? (
+                <Typography
+                  variant="h4"
+                  sx={{ textAlign: "center", verticalAlign: "bottom" }}
+                >
+                  Maaser: ${maaserState.maaser.toFixed(2)}
+                </Typography>
+              ) : (
+                <Typography variant="h5" sx={{ textAlign: "center" }}>
+                  No maaser at this time
+                </Typography>
+              )}
+            </Grid>
           </Grid>
-          <Grid
-            item
-            sm={4}
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "flex-end",
-            }}
-          >
-            {maaserState.maaser > 0 ? (
-              <Typography
-                variant="h4"
-                sx={{ textAlign: "center", verticalAlign: "bottom" }}
-              >
-                Maaser: ${maaserState.maaser.toFixed(2)}
-              </Typography>
-            ) : (
-              <Typography variant="h4" sx={{ textAlign: "center" }}>
-                No maaser at this time
-              </Typography>
-            )}
-          </Grid>
-        </Grid>
+        </div>
         <Popover
           open={open}
           anchorEl={anchorEl}
@@ -181,7 +184,6 @@ export default function MyCharities() {
             horizontal: "left",
           }}
         >
-          {console.log(anchorEl)}
           <List>
             <ListItem
               sx={
@@ -207,9 +209,6 @@ export default function MyCharities() {
             handleClickOpen={handleClickOpen}
           />
         )}
-        <Typography variant="h5" sx={{ margin: "40px 0 20px 0" }}>
-          Other charities you've donated to:
-        </Typography>
         <Dialog open={dialogOpen} onClose={() => handleDialogClose(false)}>
           <Box sx={{ width: "30vw" }}>
             <DialogTitle>Donate to {selectedCharity.name}</DialogTitle>
@@ -262,19 +261,60 @@ export default function MyCharities() {
             </DialogActions>
           </Box>
         </Dialog>
-        <Grid container spacing={2}>
-          {charitiesState.charities.map(
-            (charity) =>
-              charity.name !== selectedSearchTerm?.name && (
-                <Grid item sm={12} md={6} lg={4}>
-                  <CharityCard
-                    charity={charity}
-                    handleClickOpen={handleClickOpen}
-                  />
-                </Grid>
-              )
-          )}
-        </Grid>
+        {charitiesState.charities.length > 0 ? (
+          <>
+            <Typography variant="h5" sx={{ margin: "40px 0 20px 0" }}>
+              Other charities you've donated to:
+            </Typography>
+            <Grid container spacing={2}>
+              {charitiesState.charities.map(
+                (charity) =>
+                  charity.name !== selectedSearchTerm?.name && (
+                    <Grid item sm={12} md={6} lg={4}>
+                      <CharityCard
+                        charity={charity}
+                        handleClickOpen={handleClickOpen}
+                      />
+                    </Grid>
+                  )
+              )}
+            </Grid>
+          </>
+        ) : (
+          <>
+            <Paper
+              sx={{
+                margin: "50px",
+                padding: "50px",
+                backgroundColor: "#dde7db",
+              }}
+            >
+              <Typography variant="h6">
+                Your generosity has the power to change lives. Currently, there
+                are no charities in your donation history. Keep track of the
+                nonprofits you've supported and witness the impact of your
+                contributions. Start your journey of giving today, and together,
+                let's create a brighter future for those in need.
+              </Typography>
+            </Paper>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                margin: "0 50px",
+              }}
+            >
+              {Array.from(Array(3), () => (
+                <Skeleton
+                  variant="rounded"
+                  sx={{ width: "30%" }}
+                  height={220}
+                  animation="wave"
+                />
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
@@ -303,47 +343,49 @@ function CharityCard(props) {
   }
 
   return (
-    <Card sx={{ boxShadow: "0 1px 8px rgba(0, 0, 0, 0.3)" }}>
-      <CardMedia
-        component="img"
-        height="194"
-        image={charity.coverImageUrl || DefaultCoverImage}
-      />
+    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+      <Card sx={{ boxShadow: "0 1px 8px rgba(0, 0, 0, 0.3)" }}>
+        <CardMedia
+          component="img"
+          height="194"
+          image={charity.coverImageUrl || DefaultCoverImage}
+        />
 
-      <CardHeader title={charity.name}></CardHeader>
-      <CardContent>
-        <Typography variant="body2" color="text.secondary">
-          {charity.description ? charity.description + "..." : ""}
-        </Typography>
-      </CardContent>
-      <CardActions
-        disableSpacing
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-        }}
-      >
-        <div>
-          <ExpandMoreWrapper expand={expanded} onClick={handleExpandClick}>
-            <ExpandMore />
-          </ExpandMoreWrapper>
-          <Typography>Total Donated: ${charity.totalDonations}</Typography>
-        </div>
-        <div>
-          <IconButton onClick={() => handleClickOpen(charity)}>
-            <VolunteerActivismIcon />
-          </IconButton>
-        </div>
-      </CardActions>
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
+        <CardHeader title={charity.name}></CardHeader>
         <CardContent>
-          {charity.donations.map((donation) => (
-            <p>
-              {donation.date} {donation.amount}
-            </p>
-          ))}
+          <Typography variant="body2" color="text.secondary">
+            {charity.description ? charity.description + "..." : ""}
+          </Typography>
         </CardContent>
-      </Collapse>
-    </Card>
+        <CardActions
+          disableSpacing
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
+          <div>
+            <ExpandMoreWrapper expand={expanded} onClick={handleExpandClick}>
+              <ExpandMore />
+            </ExpandMoreWrapper>
+            <Typography>Total Donated: ${charity.totalDonations}</Typography>
+          </div>
+          <div>
+            <IconButton onClick={() => handleClickOpen(charity)}>
+              <VolunteerActivismIcon />
+            </IconButton>
+          </div>
+        </CardActions>
+        <Collapse in={expanded} timeout="auto" unmountOnExit>
+          <CardContent>
+            {charity.donations.map((donation) => (
+              <p>
+                {donation.date} {donation.amount}
+              </p>
+            ))}
+          </CardContent>
+        </Collapse>
+      </Card>
+    </div>
   );
 }

@@ -15,12 +15,6 @@ import Maaser from "./components/Maaser/maaser";
 
 function App() {
   const [charitiesState, charitiesDispatch] = useReducer(charitiesReducer, {
-    charities: [
-      { name: "Tomche Shabbos of Rockland County", amount: 80 },
-      { name: "Oorah", amount: 29 },
-      { name: "Chai Lifeline", amount: 80 },
-      { name: "Kupath Ezra", amount: 80 },
-    ],
     charities: [],
   });
   const [maaserState, maaserDispatch] = useReducer(maaserReducer, {
